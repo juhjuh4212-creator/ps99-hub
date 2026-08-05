@@ -82,7 +82,7 @@ local _a31 = { place = false, merchant = false, upgrade = false, towerup = false
 crop = false, expand = false, rebirth = false, hatch = false, luck = false,
 farm = false, zone = false, mhatch = false, rank = false, mreb = false,
 quest = false, mapupg = false, items = false, slots = false,
-auto = false, petspd = true, rewatch = true }
+auto = true, petspd = true, rewatch = true }
 local _a32 = { slots = 0, filled = 0, empty = 0, placed = 0, swapped = 0, bought = 0,
 upgraded = 0, sun = 0, replant = 0, hatched = 0, luck = 0,
 farm = 0, zone = 0, mhatch = 0, rank = 0, mreb = 0,

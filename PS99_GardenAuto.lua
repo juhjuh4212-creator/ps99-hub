@@ -82,7 +82,7 @@ local _a31 = { place = false, merchant = false, upgrade = false, towerup = false
 crop = false, expand = false, rebirth = false, hatch = false, luck = false,
 farm = false, zone = false, mhatch = false, rank = false, mreb = false,
 quest = false, mapupg = false, items = false, slots = false,
-auto = false, petspd = true, rewatch = true }
+auto = true, petspd = true, rewatch = true }
 local _a32 = { slots = 0, filled = 0, empty = 0, placed = 0, swapped = 0, bought = 0,
 upgraded = 0, sun = 0, replant = 0, hatched = 0, luck = 0,
 farm = 0, zone = 0, mhatch = 0, rank = 0, mreb = 0,
@@ -4986,14 +4986,15 @@ _a1894 .. " " .. (_a1573.auto and (_a1893.step or "-") or "정지"),
 task.wait(0.2)
 end
 end)
-_a1701(_a1890, "auto", function()
+function _a1603.auto.start()
 for _a1896, _a1897 in ipairs(_a1603.auto.STEPS) do _a1573[_a1897.run] = false end
 for _a1898, _a1899 in ipairs(_a1603.auto.SIDE) do _a1573[_a1899.run] = false end
 _a1573.petspd = true
 _a1573.rewatch = true
 _a1698()
 _a1615("auto", function() return _a1571.AutoInterval end, _a1603.auto.master, "자동")
-end)
+end
+_a1701(_a1890, "auto", _a1603.auto.start)
 _a1712(_a1889, {
 { label = "주기", value = _a1571.AutoInterval, onChange = function(_a1900)
 local _a1901 = tonumber(_a1900) if _a1901 and _a1901 >= 1 then _a1571.AutoInterval = _a1901 end
@@ -5931,4 +5932,18 @@ _a1568("Garden 이벤트 안에서 실행해 주세요")
 end
 _a1574.sun = _a1582()
 _a1568("Sunflowers " .. _a1569(_a1574.sun, 0))
+if _a1573.auto and _a1603.auto.start then
+task.spawn(function()
+task.wait(1)
+_a1603.ctl.abort = false
+local _a2188, _a2189 = pcall(_a1603.auto.start)
+if _a2188 then
+_a1568("[자동] 올 자동 시작 (기본값 켜짐)")
+else
+_a1573.auto = false
+_a1568("[자동] 시작 실패: " .. tostring(_a2189))
+if _a1603.auto.refresh then pcall(_a1603.auto.refresh) end
+end
+end)
+end
 end)(_a1)

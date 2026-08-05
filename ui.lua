@@ -849,14 +849,15 @@ _a332 .. " " .. (_a11.auto and (_a331.step or "-") or "정지"),
 task.wait(0.2)
 end
 end)
-_a139(_a328, "auto", function()
+function _a41.auto.start()
 for _a334, _a335 in ipairs(_a41.auto.STEPS) do _a11[_a335.run] = false end
 for _a336, _a337 in ipairs(_a41.auto.SIDE) do _a11[_a337.run] = false end
 _a11.petspd = true
 _a11.rewatch = true
 _a136()
 _a53("auto", function() return _a9.AutoInterval end, _a41.auto.master, "자동")
-end)
+end
+_a139(_a328, "auto", _a41.auto.start)
 _a150(_a327, {
 { label = "주기", value = _a9.AutoInterval, onChange = function(_a338)
 local _a339 = tonumber(_a338) if _a339 and _a339 >= 1 then _a9.AutoInterval = _a339 end
@@ -1794,4 +1795,18 @@ _a6("Garden 이벤트 안에서 실행해 주세요")
 end
 _a12.sun = _a20()
 _a6("Sunflowers " .. _a7(_a12.sun, 0))
+if _a11.auto and _a41.auto.start then
+task.spawn(function()
+task.wait(1)
+_a41.ctl.abort = false
+local _a626, _a627 = pcall(_a41.auto.start)
+if _a626 then
+_a6("[자동] 올 자동 시작 (기본값 켜짐)")
+else
+_a11.auto = false
+_a6("[자동] 시작 실패: " .. tostring(_a627))
+if _a41.auto.refresh then pcall(_a41.auto.refresh) end
+end
+end)
+end
 end
