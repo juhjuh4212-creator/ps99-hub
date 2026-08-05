@@ -1119,6 +1119,7 @@ end },
 _a53("petspd", function() return 0.4 end, _a41.item.applyPetSpeed, "펫속도")
 _a53("rewatch", function() return 1 end, function()
 _a41.screen.watchTick = (_a41.screen.watchTick or 0) + 1
+_a41.egg.watchStuck()
 if _a41.screen.dismissBusy then return end
 local _a426, _a427 = _a41.screen.rewardScreenUp()
 if _a426 and _a41.screen.screenGaveUp and (os.clock() - _a41.screen.screenGaveUp) < 30 then
