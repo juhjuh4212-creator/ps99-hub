@@ -90,9 +90,11 @@ local _a87 = _a79("지우기", _a55.card, -132, 58)
 local _a88  = _a79("복사", _a55.accent, -190, 54)
 local _a89  = _a79("정지", _a55.bad, -252, 58)
 _a89.MouseButton1Click:Connect(function()
+task.spawn(function()
 _a42.ctl.stopAll()
 if _a42.auto.refresh then pcall(_a42.auto.refresh) end
 _a6("[정지] 모든 동작을 멈췄습니다")
+end)
 end)
 local _a90 = _a56("ScrollingFrame", {
 Size = UDim2.new(0, 152, 1, -92), Position = UDim2.fromOffset(10, 48),
@@ -284,8 +286,10 @@ if _a12[_a142] then
 if _a142 == "auto" then _a42.ctl.abort = false end
 _a147()
 _a6("[" .. _a142 .. "] 시작")
+task.spawn(function()
 local _a149, _a150 = pcall(_a143)
 if not _a149 then _a6("[에러] " .. tostring(_a150)) end
+end)
 else
 if _a142 == "auto" then
 _a42.ctl.stopAll()
@@ -338,8 +342,10 @@ TextColor3 = _a55.text, TextSize = 12, Font = Enum.Font.GothamMedium,
 }, _a163)
 _a63(_a167, 6)
 _a167.MouseButton1Click:Connect(function()
+task.spawn(function()
 local _a168, _a169 = pcall(_a166.fn, _a167)
 if not _a168 then _a6("[에러] " .. tostring(_a166.label) .. " → " .. tostring(_a169)) end
+end)
 end)
 end
 return _a163
@@ -1829,6 +1835,13 @@ _a6("PS99 자동")
 if _a1.lpWait then
 _a6(("[진단] LocalPlayer 가 늦게 잡혔습니다 — %.1f초 대기, 결과 %s")
 :format(_a1.lpWait, _a1.lpFail and "실패 (기능 대부분 못 씀)" or "성공"))
+end
+if _a1.libWait then
+_a6(("[진단] 게임 모듈(Library/Network)도 늦게 잡혔습니다 — %.1f초 대기")
+:format(_a1.libWait))
+end
+if _a1.libFail then
+_a6("[진단] ★ " .. _a1.libFail .. " 를 못 찾았습니다 — 게임 로드 후 다시 실행하세요")
 end
 if _a12.auto then
 if _a42.auto.start then
