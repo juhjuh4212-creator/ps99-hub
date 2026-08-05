@@ -1785,6 +1785,10 @@ _a84.MouseButton1Click:Connect(_a620)
 _G.__PS99_GARDEN = _a620
 _a96("dash")
 _a6("PS99 자동")
+if _a1.lpWait then
+_a6(("[진단] LocalPlayer 가 늦게 잡혔습니다 — %.1f초 대기, 결과 %s")
+:format(_a1.lpWait, _a1.lpFail and "실패 (기능 대부분 못 씀)" or "성공"))
+end
 if _a11.auto then
 if _a41.auto.start then
 _a6("[자동] 올 자동 켜짐 — 1초 뒤 시작합니다")

@@ -792,6 +792,13 @@ if _a262 then _a5("    " .. table.concat(_a267, " / ")) end
 return _a272
 end
 function _a18.screen.rewardScreenUp()
+if not _a4 then
+if not _a18.screen.noLP then
+_a18.screen.noLP = true
+_a5("[화면] LocalPlayer 를 못 잡았습니다 — 화면 감시를 건너뜁니다")
+end
+return false
+end
 local _a275 = _a4:FindFirstChildOfClass("PlayerGui")
 if _a275 then
 for _a276, _a277 in ipairs(_a18.screen.BLOCKERS) do
@@ -2797,37 +2804,51 @@ end
 _a5("[타워업글] " .. _a986 .. "건")
 end
 local _a991 = {}
-local function _a992(_a993, _a994, _a995, _a996)
-_a991[_a993] = (_a991[_a993] or 0) + 1
-local _a997 = _a991[_a993]
-task.spawn(function()
-while _a12[_a993] and _a991[_a993] == _a997 do
-local _a998, _a999 = pcall(_a995)
-if not _a998 then _a5("[" .. _a996 .. " 오류] " .. tostring(_a999)) end
-local _a1000, _a1001 = _a994(), 0
-while _a1001 < _a1000 and _a12[_a993] and _a991[_a993] == _a997 do task.wait(0.1) _a1001 += 0.1 end
+local _a992 = {}
+local function _a993(_a994, _a995)
+local _a996 = tostring(_a995)
+local _a997 = _a992[_a994]
+if _a997 and _a997.msg == _a996 then
+_a997.n += 1
+if _a997.n % 20 == 0 then
+_a5(("[%s 오류] %s   (%d회 반복)"):format(_a994, _a996, _a997.n))
 end
-if _a991[_a993] == _a997 then _a5("[" .. _a996 .. "] 중지") end
+return
+end
+_a992[_a994] = { msg = _a996, n = 1 }
+_a5("[" .. _a994 .. " 오류] " .. _a996)
+end
+local function _a998(_a999, _a1000, _a1001, _a1002)
+_a991[_a999] = (_a991[_a999] or 0) + 1
+local _a1003 = _a991[_a999]
+task.spawn(function()
+while _a12[_a999] and _a991[_a999] == _a1003 do
+local _a1004, _a1005 = pcall(_a1001)
+if not _a1004 then _a993(_a1002, _a1005) else _a992[_a1002] = nil end
+local _a1006, _a1007 = _a1000(), 0
+while _a1007 < _a1006 and _a12[_a999] and _a991[_a999] == _a1003 do task.wait(0.1) _a1007 += 0.1 end
+end
+if _a991[_a999] == _a1003 then _a5("[" .. _a1002 .. "] 중지") end
 end)
 end
 do
-local _a1002 = {
+local _a1008 = {
 farm   = { function() return _a11.FarmInterval end,      function() _a63() end,      "파밍" },
 zone   = { function() return _a11.ZoneInterval end,      function() _a81() end,      "존" },
 mhatch = { function() return _a11.MainHatchInterval end, function() _a122() end, "부화" },
 }
-function _a18.auto.turnOn(_a1003, _a1004)
+function _a18.auto.turnOn(_a1009, _a1010)
 if _a12.auto then return end
-if _a12[_a1003] then return end
-local _a1005 = _a1002[_a1003]
-if not _a1005 then return end
-_a12[_a1003] = true
-_a992(_a1003, _a1005[1], _a1005[2], _a1005[3])
+if _a12[_a1009] then return end
+local _a1011 = _a1008[_a1009]
+if not _a1011 then return end
+_a12[_a1009] = true
+_a998(_a1009, _a1011[1], _a1011[2], _a1011[3])
 if _a18.auto.refresh then _a18.auto.refresh() end
-_a5("[퀘스트] " .. tostring(_a1004) .. " ON")
+_a5("[퀘스트] " .. tostring(_a1010) .. " ON")
 end
 end
 _a1.MG, _a1.QS, _a1.saveGet, _a1.currencyAmount, _a1.cycleFarm, _a1.zoneStatus = _a16, _a18, _a45, _a53, _a63, _a77
 _a1.cycleZone, _a1.bestMainEgg, _a1.mainHatchStatus, _a1.cycleMainHatch, _a1.mainRebirthStatus, _a1.cycleMainRebirth = _a81, _a86, _a111, _a122, _a940, _a947
-_a1.cycleTowerUp, _a1.startLoop = _a981, _a992
+_a1.cycleTowerUp, _a1.startLoop = _a981, _a998
 end
