@@ -2777,78 +2777,87 @@ if not _a18.ctl.lockGoal then
 _a18.ctl.now.step = "대기"
 _a18.ctl.setAct("다음 바퀴 대기", ("%.0f초 주기"):format(_a11.AutoInterval or 5))
 end
+local _a981 = {}
+for _a982, _a983 in ipairs(_a974) do _a981[#_a981 + 1] = (_a983:gsub("[%d%.]+초", "")) end
+_a981 = table.concat(_a981, " | ")
+if _a981 ~= _a18.auto.lastSig then
+_a18.auto.lastSig = _a981
+_a5("[자동] 바퀴 " .. (_a18.auto.passN or 0))
+for _a984, _a985 in ipairs(_a974) do _a5("    " .. _a985) end
 end
-local function _a981()
+_a18.auto.passN = (_a18.auto.passN or 0) + 1
+end
+local function _a986()
 if not _a10.R_PROMO then _a5("[타워업글] 리모트 없음") return end
-local _a982 = _a14()
-if not _a982 then return end
-local _a983 = _a15(_a982)
-table.sort(_a983, function(_a984, _a985) return (_a984.dps or 0) > (_a985.dps or 0) end)
-local _a986, _a987 = 0, 0
-for _a988, _a989 in ipairs(_a983) do
+local _a987 = _a14()
+if not _a987 then return end
+local _a988 = _a15(_a987)
+table.sort(_a988, function(_a989, _a990) return (_a989.dps or 0) > (_a990.dps or 0) end)
+local _a991, _a992 = 0, 0
+for _a993, _a994 in ipairs(_a988) do
 if not _a12.towerup then break end
-if _a989.id then
-local _a990
-pcall(function() _a990 = _a10.R_PROMO:InvokeServer(_a989.id) end)
-if _a990 ~= nil and _a990 ~= false then
-_a986 += 1
-_a5(("  ▲ 타워업글  %s  Lv%s → Lv%s"):format(tostring(_a989.kind), tostring(_a989.up), tostring((_a989.up or 0) + 1)))
-_a987 = 0
+if _a994.id then
+local _a995
+pcall(function() _a995 = _a10.R_PROMO:InvokeServer(_a994.id) end)
+if _a995 ~= nil and _a995 ~= false then
+_a991 += 1
+_a5(("  ▲ 타워업글  %s  Lv%s → Lv%s"):format(tostring(_a994.kind), tostring(_a994.up), tostring((_a994.up or 0) + 1)))
+_a992 = 0
 task.wait(_a11.ActionGap)
 else
-_a987 += 1
-if _a987 >= 5 then break end
+_a992 += 1
+if _a992 >= 5 then break end
 end
 end
 end
-_a5("[타워업글] " .. _a986 .. "건")
+_a5("[타워업글] " .. _a991 .. "건")
 end
-local _a991 = {}
-local _a992 = {}
-local function _a993(_a994, _a995)
-local _a996 = tostring(_a995)
-local _a997 = _a992[_a994]
-if _a997 and _a997.msg == _a996 then
-_a997.n += 1
-if _a997.n % 20 == 0 then
-_a5(("[%s 오류] %s   (%d회 반복)"):format(_a994, _a996, _a997.n))
+local _a996 = {}
+local _a997 = {}
+local function _a998(_a999, _a1000)
+local _a1001 = tostring(_a1000)
+local _a1002 = _a997[_a999]
+if _a1002 and _a1002.msg == _a1001 then
+_a1002.n += 1
+if _a1002.n % 20 == 0 then
+_a5(("[%s 오류] %s   (%d회 반복)"):format(_a999, _a1001, _a1002.n))
 end
 return
 end
-_a992[_a994] = { msg = _a996, n = 1 }
-_a5("[" .. _a994 .. " 오류] " .. _a996)
+_a997[_a999] = { msg = _a1001, n = 1 }
+_a5("[" .. _a999 .. " 오류] " .. _a1001)
 end
-local function _a998(_a999, _a1000, _a1001, _a1002)
-_a991[_a999] = (_a991[_a999] or 0) + 1
-local _a1003 = _a991[_a999]
+local function _a1003(_a1004, _a1005, _a1006, _a1007)
+_a996[_a1004] = (_a996[_a1004] or 0) + 1
+local _a1008 = _a996[_a1004]
 task.spawn(function()
-while _a12[_a999] and _a991[_a999] == _a1003 do
-local _a1004, _a1005 = pcall(_a1001)
-if not _a1004 then _a993(_a1002, _a1005) else _a992[_a1002] = nil end
-local _a1006, _a1007 = _a1000(), 0
-while _a1007 < _a1006 and _a12[_a999] and _a991[_a999] == _a1003 do task.wait(0.1) _a1007 += 0.1 end
+while _a12[_a1004] and _a996[_a1004] == _a1008 do
+local _a1009, _a1010 = pcall(_a1006)
+if not _a1009 then _a998(_a1007, _a1010) else _a997[_a1007] = nil end
+local _a1011, _a1012 = _a1005(), 0
+while _a1012 < _a1011 and _a12[_a1004] and _a996[_a1004] == _a1008 do task.wait(0.1) _a1012 += 0.1 end
 end
-if _a991[_a999] == _a1003 then _a5("[" .. _a1002 .. "] 중지") end
+if _a996[_a1004] == _a1008 then _a5("[" .. _a1007 .. "] 중지") end
 end)
 end
 do
-local _a1008 = {
+local _a1013 = {
 farm   = { function() return _a11.FarmInterval end,      function() _a63() end,      "파밍" },
 zone   = { function() return _a11.ZoneInterval end,      function() _a81() end,      "존" },
 mhatch = { function() return _a11.MainHatchInterval end, function() _a122() end, "부화" },
 }
-function _a18.auto.turnOn(_a1009, _a1010)
+function _a18.auto.turnOn(_a1014, _a1015)
 if _a12.auto then return end
-if _a12[_a1009] then return end
-local _a1011 = _a1008[_a1009]
-if not _a1011 then return end
-_a12[_a1009] = true
-_a998(_a1009, _a1011[1], _a1011[2], _a1011[3])
+if _a12[_a1014] then return end
+local _a1016 = _a1013[_a1014]
+if not _a1016 then return end
+_a12[_a1014] = true
+_a1003(_a1014, _a1016[1], _a1016[2], _a1016[3])
 if _a18.auto.refresh then _a18.auto.refresh() end
-_a5("[퀘스트] " .. tostring(_a1010) .. " ON")
+_a5("[퀘스트] " .. tostring(_a1015) .. " ON")
 end
 end
 _a1.MG, _a1.QS, _a1.saveGet, _a1.currencyAmount, _a1.cycleFarm, _a1.zoneStatus = _a16, _a18, _a45, _a53, _a63, _a77
 _a1.cycleZone, _a1.bestMainEgg, _a1.mainHatchStatus, _a1.cycleMainHatch, _a1.mainRebirthStatus, _a1.cycleMainRebirth = _a81, _a86, _a111, _a122, _a940, _a947
-_a1.cycleTowerUp, _a1.startLoop = _a981, _a998
+_a1.cycleTowerUp, _a1.startLoop = _a986, _a1003
 end
