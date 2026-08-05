@@ -190,7 +190,7 @@ if pcall(readfile, _a44 .. "event.lua") then _a42 = _a44 break end
 end
 end
 local function _a45(_a46)
-local _a47, _a48 = pcall(function() return game:HttpGet(_a46, true) end)
+local _a47, _a48 = pcall(function() return game:HttpGet(_a46) end)
 if _a47 and type(_a48) == "string" and #_a48 > 0 then return _a48 end
 local _a49 = (syn and syn.request) or (http and http.request) or http_request or request
 if type(_a49) == "function" then

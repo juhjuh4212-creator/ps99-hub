@@ -1784,29 +1784,37 @@ end
 _a84.MouseButton1Click:Connect(_a620)
 _G.__PS99_GARDEN = _a620
 _a96("dash")
-_a6("Garden Defenders AutoPlay")
-local _a621, _a622, _a623, _a624 = _a14()
-if _a621 and _a623 then
-local _a625 = _a15(_a623, _a624)
-_a12.slots = #_a625
-_a6("레인 " .. _a624 .. " / 슬롯 " .. #_a625)
-else
-_a6("Garden 이벤트 안에서 실행해 주세요")
-end
-_a12.sun = _a20()
-_a6("Sunflowers " .. _a7(_a12.sun, 0))
-if _a11.auto and _a41.auto.start then
+_a6("PS99 자동")
+if _a11.auto then
+if _a41.auto.start then
+_a6("[자동] 올 자동 켜짐 — 1초 뒤 시작합니다")
 task.spawn(function()
 task.wait(1)
 _a41.ctl.abort = false
-local _a626, _a627 = pcall(_a41.auto.start)
-if _a626 then
-_a6("[자동] 올 자동 시작 (기본값 켜짐)")
+local _a621, _a622 = pcall(_a41.auto.start)
+if _a621 then
+_a6("[자동] 시작됨")
 else
 _a11.auto = false
-_a6("[자동] 시작 실패: " .. tostring(_a627))
+_a6("[자동] 시작 실패: " .. tostring(_a622))
 if _a41.auto.refresh then pcall(_a41.auto.refresh) end
 end
 end)
+else
+_a11.auto = false
+_a6("[자동] QS.auto.start 가 없습니다 — 메인 게임 탭이 안 만들어짐")
 end
+end
+pcall(function()
+local _a623, _a624, _a625, _a626 = _a14()
+if _a623 and _a625 then
+local _a627 = _a15(_a625, _a626)
+_a12.slots = #_a627
+_a6("레인 " .. _a626 .. " / 슬롯 " .. #_a627)
+else
+_a6("가든 이벤트 밖입니다 (이벤트 탭은 이벤트 안에서만 동작)")
+end
+_a12.sun = _a20()
+_a6("Sunflowers " .. _a7(_a12.sun, 0))
+end)
 end

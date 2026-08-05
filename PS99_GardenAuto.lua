@@ -261,8 +261,13 @@ end
 return _a90
 end
 local function _a96()
-local _a97 = _a39.ClientTowerDefense and _a39.ClientTowerDefense.GetLocal and _a39.ClientTowerDefense.GetLocal()
-local _a98  = _a39.ClientPlot and _a39.ClientPlot.GetLocal and _a39.ClientPlot.GetLocal()
+local _a97, _a98
+pcall(function()
+_a97 = _a39.ClientTowerDefense and _a39.ClientTowerDefense.GetLocal and _a39.ClientTowerDefense.GetLocal()
+end)
+pcall(function()
+_a98 = _a39.ClientPlot and _a39.ClientPlot.GetLocal and _a39.ClientPlot.GetLocal()
+end)
 local _a99
 if _a98 then pcall(function() _a99 = _a98:GetModel() end) end
 local _a100 = 0
@@ -5921,29 +5926,37 @@ end
 _a1646.MouseButton1Click:Connect(_a2182)
 _G.__PS99_GARDEN = _a2182
 _a1658("dash")
-_a1568("Garden Defenders AutoPlay")
-local _a2183, _a2184, _a2185, _a2186 = _a1576()
-if _a2183 and _a2185 then
-local _a2187 = _a1577(_a2185, _a2186)
-_a1574.slots = #_a2187
-_a1568("레인 " .. _a2186 .. " / 슬롯 " .. #_a2187)
-else
-_a1568("Garden 이벤트 안에서 실행해 주세요")
-end
-_a1574.sun = _a1582()
-_a1568("Sunflowers " .. _a1569(_a1574.sun, 0))
-if _a1573.auto and _a1603.auto.start then
+_a1568("PS99 자동")
+if _a1573.auto then
+if _a1603.auto.start then
+_a1568("[자동] 올 자동 켜짐 — 1초 뒤 시작합니다")
 task.spawn(function()
 task.wait(1)
 _a1603.ctl.abort = false
-local _a2188, _a2189 = pcall(_a1603.auto.start)
-if _a2188 then
-_a1568("[자동] 올 자동 시작 (기본값 켜짐)")
+local _a2183, _a2184 = pcall(_a1603.auto.start)
+if _a2183 then
+_a1568("[자동] 시작됨")
 else
 _a1573.auto = false
-_a1568("[자동] 시작 실패: " .. tostring(_a2189))
+_a1568("[자동] 시작 실패: " .. tostring(_a2184))
 if _a1603.auto.refresh then pcall(_a1603.auto.refresh) end
 end
 end)
+else
+_a1573.auto = false
+_a1568("[자동] QS.auto.start 가 없습니다 — 메인 게임 탭이 안 만들어짐")
 end
+end
+pcall(function()
+local _a2185, _a2186, _a2187, _a2188 = _a1576()
+if _a2185 and _a2187 then
+local _a2189 = _a1577(_a2187, _a2188)
+_a1574.slots = #_a2189
+_a1568("레인 " .. _a2188 .. " / 슬롯 " .. #_a2189)
+else
+_a1568("가든 이벤트 밖입니다 (이벤트 탭은 이벤트 안에서만 동작)")
+end
+_a1574.sun = _a1582()
+_a1568("Sunflowers " .. _a1569(_a1574.sun, 0))
+end)
 end)(_a1)

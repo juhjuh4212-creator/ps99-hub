@@ -89,8 +89,13 @@ end
 return _a58
 end
 local function _a64()
-local _a65 = _a7.ClientTowerDefense and _a7.ClientTowerDefense.GetLocal and _a7.ClientTowerDefense.GetLocal()
-local _a66  = _a7.ClientPlot and _a7.ClientPlot.GetLocal and _a7.ClientPlot.GetLocal()
+local _a65, _a66
+pcall(function()
+_a65 = _a7.ClientTowerDefense and _a7.ClientTowerDefense.GetLocal and _a7.ClientTowerDefense.GetLocal()
+end)
+pcall(function()
+_a66 = _a7.ClientPlot and _a7.ClientPlot.GetLocal and _a7.ClientPlot.GetLocal()
+end)
 local _a67
 if _a66 then pcall(function() _a67 = _a66:GetModel() end) end
 local _a68 = 0
