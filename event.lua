@@ -1127,6 +1127,6 @@ end
 _a1.EVENT_UPGRADES, _a1.ctx, _a1.collectSlots, _a1.placedTowers, _a1.availableItems, _a1.cyclePlace = _a16, _a64, _a71, _a90, _a104, _a145
 _a1.cycleMerchant, _a1.sunflowers, _a1.eventTiers, _a1.nextCost, _a1.cycleUpgrade, _a1.seedInv = _a187, _a192, _a198, _a230, _a251, _a308
 _a1.bedsOf, _a1.isUnhatched, _a1.bedCps, _a1.cycleCrop, _a1.laneCosts, _a1.lockedBeds = _a318, _a326, _a330, _a334, _a357, _a365
-_a1.cycleExpand, _a1.rebirthStatus, _a1.cycleRebirth, _a1.eggCost, _a1.hatchStatus, _a1.cycleHatch = _a372, _a396, _a411, _a437, _a463, _a470
+_a1.cycleExpand, _a1.rebirthStatus, _a1.cycleRebirth, _a1.hatchStatus, _a1.cycleHatch = _a372, _a396, _a411, _a463, _a470
 _a1.LUCK_ORDER, _a1.luckStatus, _a1.fmtDur, _a1.cycleLuck = _a484, _a500, _a508, _a512
 end
