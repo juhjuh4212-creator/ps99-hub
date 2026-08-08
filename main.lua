@@ -104,7 +104,7 @@ end
 function _a18.egg.eggStands()
 local _a24 = os.clock()
 if _a18.egg._standsAt and (_a24 - _a18.egg._standsAt) < 2 and _a18.egg._stands then
-local _a25 = _a4.Character
+local _a25 = _a4 and _a4.Character
 local _a26 = _a25 and _a25:FindFirstChild("HumanoidRootPart")
 if _a26 then
 for _a27, _a28 in ipairs(_a18.egg._stands) do
@@ -118,7 +118,7 @@ local _a31 = {}
 local _a32 = workspace:FindFirstChild("__THINGS")
 local _a33 = _a32 and _a32:FindFirstChild("Eggs")
 if not _a33 then return _a31 end
-local _a34 = _a4.Character
+local _a34 = _a4 and _a4.Character
 local _a35 = _a34 and _a34:FindFirstChild("HumanoidRootPart")
 for _a36, _a37 in ipairs(_a33:GetDescendants()) do
 if _a37:IsA("Model") and _a37.PrimaryPart then
@@ -559,7 +559,7 @@ _a5(("[랭크] 보상 %d개 수령  (Rank %d, ★%d)"):format(_a182, _a181.rankN
 end
 end
 function _a18.move.hrp()
-local _a185 = _a4.Character
+local _a185 = _a4 and _a4.Character
 return _a185 and _a185:FindFirstChild("HumanoidRootPart"),
 _a185 and _a185:FindFirstChildOfClass("Humanoid")
 end
@@ -1140,7 +1140,7 @@ if not _a400 then return false, "캐릭터 없음" end
 if _a11.TpMode == "instant" then
 local _a402 = _a399 + Vector3.new(0, 4, 0)
 for _a403 = 1, 3 do
-local _a404 = _a4.Character
+local _a404 = _a4 and _a4.Character
 local _a405, _a406 = _a18.move.hrp()
 if not (_a404 and _a405) then return false, "캐릭터 없음" end
 local _a407 = _a405.CFrame - _a405.CFrame.Position
@@ -1263,7 +1263,7 @@ _a453 = tonumber(_a453) or 0
 local _a454 = RaycastParams.new()
 _a454.FilterType = Enum.RaycastFilterType.Exclude
 local _a455 = {}
-if _a4.Character then _a455[#_a455 + 1] = _a4.Character end
+if _a4 and _a4.Character then _a455[#_a455 + 1] = _a4.Character end
 local _a456 = workspace:FindFirstChild("__THINGS")
 if _a456 then _a455[#_a455 + 1] = _a456 end
 _a454.FilterDescendantsInstances = _a455

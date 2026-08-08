@@ -1892,7 +1892,11 @@ _a97("dash")
 _a6("PS99 자동")
 if _a1.lpWait then
 _a6(("[진단] LocalPlayer 가 늦게 잡혔습니다 — %.1f초 대기, 결과 %s")
-:format(_a1.lpWait, _a1.lpFail and "실패 (기능 대부분 못 씀)" or "성공"))
+:format(_a1.lpWait, _a1.lpFail and "★ 실패" or "성공"))
+end
+if _a1.lpFail then
+_a6("[진단] ★ LocalPlayer 를 못 잡아 이동·부화가 전부 안 됩니다.")
+_a6("        게임이 완전히 로드된 뒤에 다시 실행해 주세요.")
 end
 if _a1.libWait then
 _a6(("[진단] 게임 모듈(Library/Network)도 늦게 잡혔습니다 — %.1f초 대기")
