@@ -31,6 +31,8 @@ R_EggUn  = _a9:FindFirstChild("Eggs_RequestUnlock"),
 Rand     = _a7("Library", "Client", "RandomEventCmds"),
 R_Events = _a9:FindFirstChild("RandomEvents_Get"),
 Ult      = _a7("Library", "Client", "UltimateCmds"),
+FruitC   = _a7("Library", "Client", "FruitCmds"),
+PotionC  = _a7("Library", "Client", "PotionCmds"),
 R_Fruit  = _a9:FindFirstChild("Fruits: Consume"),
 R_Cons   = _a9:FindFirstChild("Consumables_Consume"),
 R_Ult    = _a9:FindFirstChild("Ultimates: Activate"),
@@ -2295,143 +2297,232 @@ end
 end
 return _a790
 end
-local function _a793(_a794, _a795, _a796, _a797)
-local _a798 = _a18.item.activeBuffs(_a795)
-local _a799 = {}
-local _a800 = { total = 0, act = 0, blocked = 0, few = 0, ok = 0 }
-for _a801, _a802 in ipairs(_a18.item.stacks(_a794)) do
-_a800.total += 1
-if _a798[_a802.id] then _a800.act += 1
-elseif not _a18.item.itemAllowed(_a802.id) then _a800.blocked += 1
-elseif _a802.am <= _a11.ItemKeep then _a800.few += 1
+function _a18.item.activePotionTiers()
+local _a793 = {}
+local _a794 = _a45()
+local _a795 = _a794 and rawget(_a794, "Potions")
+if type(_a795) == "table" then
+for _a796, _a797 in pairs(_a795) do
+local _a798 = {}
+if type(_a797) == "table" then
+for _a799 in pairs(_a797) do _a798[tonumber(_a799) or _a799] = true end
+end
+_a793[tostring(_a796)] = _a798
+end
+end
+return _a793
+end
+function _a18.item.fruitLimit()
+if _a16.FruitC and rawget(_a16.FruitC, "ComputeFruitQueueLimit") then
+local _a800, _a801 = pcall(_a16.FruitC.ComputeFruitQueueLimit)
+if _a800 and tonumber(_a801) and tonumber(_a801) > 0 then return tonumber(_a801) end
+end
+return 20
+end
+function _a18.item.activeFruitCount()
+local _a802 = {}
+local _a803 = _a45()
+local _a804 = _a803 and rawget(_a803, "Fruits")
+if type(_a804) == "table" then
+for _a805, _a806 in pairs(_a804) do
+local _a807 = 0
+if type(_a806) == "table" then
+for _a808, _a809 in pairs(_a806) do
+if type(_a809) == "table" then _a807 += #_a809 end
+end
+end
+_a802[tostring(_a805)] = _a807
+end
+end
+return _a802
+end
+local function _a810(_a811, _a812, _a813, _a814)
+local _a815 = _a18.item.activeBuffs(_a812)
+local _a816 = {}
+local _a817 = { total = 0, act = 0, blocked = 0, few = 0, ok = 0 }
+for _a818, _a819 in ipairs(_a18.item.stacks(_a811)) do
+_a817.total += 1
+if _a815[_a819.id] then _a817.act += 1
+elseif not _a18.item.itemAllowed(_a819.id) then _a817.blocked += 1
+elseif _a819.am <= _a11.ItemKeep then _a817.few += 1
 else
-_a800.ok += 1
-local _a803 = _a799[_a802.id]
-local _a804
-if not _a803 then _a804 = true
-elseif _a11.BuffHighTier then _a804 = _a802.tier > _a803.tier
-else _a804 = _a802.tier < _a803.tier end
-if _a804 then _a799[_a802.id] = _a802 end
+_a817.ok += 1
+local _a820 = _a816[_a819.id]
+local _a821
+if not _a820 then _a821 = true
+elseif _a11.BuffHighTier then _a821 = _a819.tier > _a820.tier
+else _a821 = _a819.tier < _a820.tier end
+if _a821 then _a816[_a819.id] = _a819 end
 end
 end
-if _a800.ok == 0 and _a800.total > 0 then
-local _a805 = ("%s %d종 중 사용 가능 0 (이미걸림 %d / 제외 %d / 재고부족 %d)")
-:format(_a794, _a800.total, _a800.act, _a800.blocked, _a800.few)
-if _a18.item.buffSaid ~= _a805 then
-_a18.item.buffSaid = _a805
-_a5("[아이템] " .. _a805)
+if _a817.ok == 0 and _a817.total > 0 then
+local _a822 = ("%s %d종 중 사용 가능 0 (이미걸림 %d / 제외 %d / 재고부족 %d)")
+:format(_a811, _a817.total, _a817.act, _a817.blocked, _a817.few)
+if _a18.item.buffSaid ~= _a822 then
+_a18.item.buffSaid = _a822
+_a5("[아이템] " .. _a822)
 end
-elseif _a800.ok > 0 then
+elseif _a817.ok > 0 then
 _a18.item.buffSaid = nil
 end
-local _a806 = {}
-for _a807, _a808 in pairs(_a799) do _a806[#_a806 + 1] = _a808 end
-table.sort(_a806, function(_a809, _a810)
-if _a809.tier ~= _a810.tier then return _a809.tier > _a810.tier end
-return _a809.am > _a810.am
+local _a823 = {}
+for _a824, _a825 in pairs(_a816) do _a823[#_a823 + 1] = _a825 end
+table.sort(_a823, function(_a826, _a827)
+if _a826.tier ~= _a827.tier then return _a826.tier > _a827.tier end
+return _a826.am > _a827.am
 end)
-local _a811 = {}
-for _a812, _a813 in ipairs(_a806) do
+local _a828 = {}
+for _a829, _a830 in ipairs(_a823) do
 if not _a12.items then break end
-if _a797 and _a797.left <= 0 then break end
-local _a814 = pcall(function() _a796(_a813.uid, 1) end)
-if _a814 then
-_a811[#_a811 + 1] = ("%s T%d"):format(_a813.id, _a813.tier)
+if _a814 and _a814.left <= 0 then break end
+local _a831 = pcall(function() _a813(_a830.uid, 1) end)
+if _a831 then
+_a828[#_a828 + 1] = ("%s T%d"):format(_a830.id, _a830.tier)
 _a13.items += 1
-if _a797 then _a797.left -= 1 end
+if _a814 then _a814.left -= 1 end
 task.wait(0.12)
 end
 end
-return _a811
+return _a828
 end
 function _a18.item.cycleItems()
-local function _a815()
-local _a816 = {}
-if _a11.BuffPotion then _a816[#_a816 + 1] = { "Potion", "Potions" } end
-if _a11.BuffFruit then _a816[#_a816 + 1] = { "Fruit", "Fruits" } end
-if _a11.BuffConsumable then _a816[#_a816 + 1] = { "Consumable", "Consumables" } end
-for _a817, _a818 in ipairs(_a816) do
-local _a819 = _a18.item.activeBuffs(_a818[2])
-for _a820, _a821 in ipairs(_a18.item.stacks(_a818[1])) do
-if _a821.am > _a11.ItemKeep and _a18.item.itemAllowed(_a821.id) and not _a819[_a821.id] then
+local function _a832()
+if _a11.BuffPotion then
+local _a833 = _a18.item.activePotionTiers()
+for _a834, _a835 in ipairs(_a18.item.stacks("Potion")) do
+if _a835.am > _a11.ItemKeep and _a18.item.itemAllowed(_a835.id) then
+local _a836 = _a833[_a835.id]
+if not (_a836 and _a836[_a835.tier]) then return true end
+end
+end
+end
+if _a11.BuffFruit then
+local _a837 = _a18.item.fruitLimit()
+local _a838 = _a18.item.activeFruitCount()
+for _a839, _a840 in ipairs(_a18.item.stacks("Fruit")) do
+if _a840.am > _a11.ItemKeep and _a18.item.itemAllowed(_a840.id)
+and (_a838[_a840.id] or 0) < _a837 then
+return true
+end
+end
+end
+if _a11.BuffConsumable then
+local _a841 = _a18.item.activeBuffs("Consumables")
+for _a842, _a843 in ipairs(_a18.item.stacks("Consumable")) do
+if _a843.am > _a11.ItemKeep and _a18.item.itemAllowed(_a843.id) and not _a841[_a843.id] then
 return true
 end
 end
 end
 if _a11.BuffUltimate and _a16.R_Ult then
-local _a822 = _a45()
-local _a823 = _a822 and rawget(_a822, "Ultimates")
-if type(_a823) == "table" then
-for _a824 in pairs(_a823) do
-if _a18.item.itemAllowed(_a824) then
+local _a844 = _a45()
+local _a845 = _a844 and rawget(_a844, "Ultimates")
+if type(_a845) == "table" then
+for _a846 in pairs(_a845) do
+if _a18.item.itemAllowed(_a846) then
 if not (_a16.Ult and rawget(_a16.Ult, "IsCharged")) then return true end
-local _a825, _a826 = pcall(_a16.Ult.IsCharged, _a824)
-if _a825 and _a826 then return true end
+local _a847, _a848 = pcall(_a16.Ult.IsCharged, _a846)
+if _a847 and _a848 then return true end
 end
 end
 end
 end
 return false
 end
-if not _a815() then return end
+if not _a832() then return end
 if _a11.ItemBestZone then
-local _a827 = _a18.move.bestZone()
-if _a827 and _a18.move.curZone() ~= _a827 then
+local _a849 = _a18.move.bestZone()
+if _a849 and _a18.move.curZone() ~= _a849 then
 if not _a11.ItemTp then
 if not _a18.item.itemZoneWarned then
 _a18.item.itemZoneWarned = true
 _a5(("[아이템] 최고 존(%s)이 아니라 대기 — 현재 %s"):format(
-tostring(_a827), tostring(_a18.move.curZone())))
+tostring(_a849), tostring(_a18.move.curZone())))
 end
 return
 end
-local _a828, _a829 = _a18.move.goToZone(_a827)
-if not _a828 then
-_a5("[아이템] 최고 존 이동 실패: " .. tostring(_a829))
+local _a850, _a851 = _a18.move.goToZone(_a849)
+if not _a850 then
+_a5("[아이템] 최고 존 이동 실패: " .. tostring(_a851))
 return
 end
-_a5("[아이템] 최고 존 " .. tostring(_a827) .. " 에서 사용")
+_a5("[아이템] 최고 존 " .. tostring(_a849) .. " 에서 사용")
 end
 _a18.item.itemZoneWarned = false
 end
-local _a830 = {}
-local _a831  = { left = math.max(1, _a11.BuffMaxPotion or 5) }
-local _a832 = { left = math.max(1, _a11.BuffMaxOther or 2) }
+local _a852 = {}
+local _a853  = { left = math.max(1, _a11.BuffMaxPotion or 5) }
+local _a854 = { left = math.max(1, _a11.BuffMaxOther or 2) }
 if _a11.BuffPotion and _a16.R_PotUse then
-local _a833 = _a793("Potion", "Potions", function(_a834, _a835)
-_a16.R_PotUse:FireServer(_a834, _a835)
-end, _a831)
-for _a836, _a837 in ipairs(_a833) do _a830[#_a830 + 1] = "포션 " .. _a837 end
+local _a855 = _a18.item.activePotionTiers()
+local _a856 = {}
+for _a857, _a858 in ipairs(_a18.item.stacks("Potion")) do
+if _a18.item.itemAllowed(_a858.id) and _a858.am > _a11.ItemKeep then
+local _a859 = _a855[_a858.id]
+if not (_a859 and _a859[_a858.tier]) then
+local _a860 = _a856[_a858.id]
+if not _a860 or _a858.tier > _a860.tier then _a856[_a858.id] = _a858 end
+end
+end
+end
+local _a861 = {}
+for _a862, _a863 in pairs(_a856) do _a861[#_a861 + 1] = _a863 end
+table.sort(_a861, function(_a864, _a865) return _a864.tier > _a865.tier end)
+for _a866, _a867 in ipairs(_a861) do
+if _a853.left <= 0 or not _a12.items then break end
+local _a868 = pcall(function() _a16.R_PotUse:FireServer(_a867.uid, 1) end)
+if _a868 then
+_a853.left -= 1
+_a13.items += 1
+_a852[#_a852 + 1] = ("포션 %s T%d"):format(_a867.id, _a867.tier)
+task.wait(_a11.ActionGap)
+end
+end
 end
 if _a11.BuffFruit and _a16.R_Fruit then
-local _a838 = _a793("Fruit", "Fruits", function(_a839, _a840)
-_a16.R_Fruit:FireServer(_a839, _a840)
-end, _a832)
-for _a841, _a842 in ipairs(_a838) do _a830[#_a830 + 1] = "과일 " .. _a842 end
+local _a869 = _a18.item.fruitLimit()
+local _a870 = _a18.item.activeFruitCount()
+for _a871, _a872 in ipairs(_a18.item.stacks("Fruit")) do
+if not _a12.items then break end
+if _a18.item.itemAllowed(_a872.id) then
+local _a873 = _a869 - (_a870[_a872.id] or 0)
+local _a874 = _a872.am - _a11.ItemKeep
+local _a875 = math.min(_a873, _a874)
+if _a875 >= 1 then
+local _a876 = pcall(function() _a16.R_Fruit:FireServer(_a872.uid, _a875) end)
+if _a876 then
+_a870[_a872.id] = (_a870[_a872.id] or 0) + _a875
+_a13.items += _a875
+_a852[#_a852 + 1] = ("과일 %s x%d"):format(_a872.id, _a875)
+task.wait(_a11.ActionGap)
+end
+end
+end
+end
 end
 if _a11.BuffConsumable and _a16.R_Cons then
-local _a843 = _a793("Consumable", "Consumables", function(_a844, _a845)
-_a16.R_Cons:InvokeServer(_a844, _a845)
-end, _a832)
-for _a846, _a847 in ipairs(_a843) do _a830[#_a830 + 1] = "소모품 " .. _a847 end
+local _a877 = _a810("Consumable", "Consumables", function(_a878, _a879)
+_a16.R_Cons:InvokeServer(_a878, _a879)
+end, _a854)
+for _a880, _a881 in ipairs(_a877) do _a852[#_a852 + 1] = "소모품 " .. _a881 end
 end
 if _a11.BuffUltimate and _a16.R_Ult then
-local _a848 = _a45()
-local _a849 = _a848 and rawget(_a848, "Ultimates")
-if type(_a849) == "table" then
-for _a850 in pairs(_a849) do
+local _a882 = _a45()
+local _a883 = _a882 and rawget(_a882, "Ultimates")
+if type(_a883) == "table" then
+for _a884 in pairs(_a883) do
 if not _a12.items then break end
-if _a18.item.itemAllowed(_a850) then
-local _a851 = true
+if _a18.item.itemAllowed(_a884) then
+local _a885 = true
 if _a16.Ult and rawget(_a16.Ult, "IsCharged") then
-local _a852, _a853 = pcall(_a16.Ult.IsCharged, _a850)
-_a851 = _a852 and _a853 and true or false
+local _a886, _a887 = pcall(_a16.Ult.IsCharged, _a884)
+_a885 = _a886 and _a887 and true or false
 end
-if _a851 then
-local _a854
-pcall(function() _a854 = _a16.R_Ult:InvokeServer(_a850) end)
-if _a854 then
-_a830[#_a830 + 1] = "얼티밋 " .. tostring(_a850)
+if _a885 then
+local _a888
+pcall(function() _a888 = _a16.R_Ult:InvokeServer(_a884) end)
+if _a888 then
+_a852[#_a852 + 1] = "얼티밋 " .. tostring(_a884)
 _a13.items += 1
 task.wait(0.3)
 end
@@ -2440,257 +2531,257 @@ end
 end
 end
 end
-if #_a830 > 0 then
-_a18.ctl.setAct("버프 사용", table.concat(_a830, ", "))
-_a5("[아이템] " .. table.concat(_a830, ", ") .. " 사용")
+if #_a852 > 0 then
+_a18.ctl.setAct("버프 사용", table.concat(_a852, ", "))
+_a5("[아이템] " .. table.concat(_a852, ", ") .. " 사용")
 end
 end
 function _a18.mach.slotStatus()
-local _a855 = _a45()
-if not _a855 then return nil end
-local _a856 = tonumber(rawget(_a855, "PetSlotsPurchased")) or 0
-local _a857 = tonumber(rawget(_a855, "EggSlotsPurchased")) or 0
-local _a858, _a859 = 0, 0
+local _a889 = _a45()
+if not _a889 then return nil end
+local _a890 = tonumber(rawget(_a889, "PetSlotsPurchased")) or 0
+local _a891 = tonumber(rawget(_a889, "EggSlotsPurchased")) or 0
+local _a892, _a893 = 0, 0
 if _a16.RankC then
 if rawget(_a16.RankC, "GetMaxPurchasableEquipSlots") then
-local _a860, _a861 = pcall(_a16.RankC.GetMaxPurchasableEquipSlots)
-if _a860 and tonumber(_a861) then _a858 = tonumber(_a861) end
+local _a894, _a895 = pcall(_a16.RankC.GetMaxPurchasableEquipSlots)
+if _a894 and tonumber(_a895) then _a892 = tonumber(_a895) end
 end
 if rawget(_a16.RankC, "GetMaxPurchasableEggSlots") then
-local _a862, _a863 = pcall(_a16.RankC.GetMaxPurchasableEggSlots)
-if _a862 and tonumber(_a863) then _a859 = tonumber(_a863) end
+local _a896, _a897 = pcall(_a16.RankC.GetMaxPurchasableEggSlots)
+if _a896 and tonumber(_a897) then _a893 = tonumber(_a897) end
 end
 end
-local _a864, _a865
-if _a856 < _a858 then
-_a864 = _a856 + 1
+local _a898, _a899
+if _a890 < _a892 then
+_a898 = _a890 + 1
 if type(_a16.CalcPetS) == "function" then
-local _a866, _a867 = pcall(_a16.CalcPetS, _a864)
-if _a866 then _a865 = tonumber(_a867) end
+local _a900, _a901 = pcall(_a16.CalcPetS, _a898)
+if _a900 then _a899 = tonumber(_a901) end
 end
 end
-local _a868, _a869, _a870
-if _a857 < _a859 and _a16.RankC and rawget(_a16.RankC, "GetEggBundle") then
-local _a871, _a872, _a873 = pcall(_a16.RankC.GetEggBundle, _a857 + 1)
-if _a871 and tonumber(_a872) then
-_a868, _a869 = tonumber(_a872), tonumber(_a873) or 1
+local _a902, _a903, _a904
+if _a891 < _a893 and _a16.RankC and rawget(_a16.RankC, "GetEggBundle") then
+local _a905, _a906, _a907 = pcall(_a16.RankC.GetEggBundle, _a891 + 1)
+if _a905 and tonumber(_a906) then
+_a902, _a903 = tonumber(_a906), tonumber(_a907) or 1
 if type(_a16.CalcEggS) == "function" then
-local _a874, _a875 = 0, false
-for _a876 = _a868 - _a869 + 1, _a868 do
-local _a877, _a878 = pcall(_a16.CalcEggS, _a876)
-if _a877 and tonumber(_a878) then _a874 += tonumber(_a878) else _a875 = true end
+local _a908, _a909 = 0, false
+for _a910 = _a902 - _a903 + 1, _a902 do
+local _a911, _a912 = pcall(_a16.CalcEggS, _a910)
+if _a911 and tonumber(_a912) then _a908 += tonumber(_a912) else _a909 = true end
 end
-if not _a875 then _a870 = _a874 end
+if not _a909 then _a904 = _a908 end
 end
 end
 end
-local _a879
+local _a913
 if _a16.Egg and rawget(_a16.Egg, "GetMaxHatch") then
-local _a880, _a881 = pcall(_a16.Egg.GetMaxHatch)
-if _a880 then _a879 = tonumber(_a881) end
+local _a914, _a915 = pcall(_a16.Egg.GetMaxHatch)
+if _a914 then _a913 = tonumber(_a915) end
 end
 return {
 dia = _a60("Diamonds"),
-petOwned = _a856, petMax = _a858, petNext = _a864, petCost = _a865,
-eggOwned = _a857, eggMax = _a859, eggEnd = _a868, eggSize = _a869, eggCost = _a870,
-maxEquip = tonumber(rawget(_a855, "MaxPetsEquipped")), maxHatch = _a879,
+petOwned = _a890, petMax = _a892, petNext = _a898, petCost = _a899,
+eggOwned = _a891, eggMax = _a893, eggEnd = _a902, eggSize = _a903, eggCost = _a904,
+maxEquip = tonumber(rawget(_a889, "MaxPetsEquipped")), maxHatch = _a913,
 }
 end
-function _a18.move.machinePos(_a882)
-local _a883
+function _a18.move.machinePos(_a916)
+local _a917
 if _a16.Machine and rawget(_a16.Machine, "GetModels") then
-local _a884, _a885 = pcall(_a16.Machine.GetModels, _a882)
-if _a884 and type(_a885) == "table" then
-for _a886, _a887 in pairs(_a885) do
-if typeof(_a887) == "Instance" then _a883 = _a887 break end
+local _a918, _a919 = pcall(_a16.Machine.GetModels, _a916)
+if _a918 and type(_a919) == "table" then
+for _a920, _a921 in pairs(_a919) do
+if typeof(_a921) == "Instance" then _a917 = _a921 break end
 end
 end
 end
-if not _a883 then
-local _a888, _a889 = pcall(function()
+if not _a917 then
+local _a922, _a923 = pcall(function()
 return game:GetService("CollectionService"):GetTagged("Machine")
 end)
-if _a888 then
-for _a890, _a891 in ipairs(_a889) do
-if _a891.Name == _a882 then _a883 = _a891 break end
+if _a922 then
+for _a924, _a925 in ipairs(_a923) do
+if _a925.Name == _a916 then _a917 = _a925 break end
 end
 end
 end
-if not _a883 then return nil end
-if _a883:IsA("BasePart") then return _a883.Position end
-local _a892, _a893 = pcall(function() return _a883:GetPivot() end)
-return (_a892 and typeof(_a893) == "CFrame") and _a893.Position or nil
+if not _a917 then return nil end
+if _a917:IsA("BasePart") then return _a917.Position end
+local _a926, _a927 = pcall(function() return _a917:GetPivot() end)
+return (_a926 and typeof(_a927) == "CFrame") and _a927.Position or nil
 end
 function _a18.mach.cycleSlots()
-local _a894 = 0
-local _a895 = 0
-while _a12.slots and not _a18.ctl.stopped() and _a895 < 40 do
-_a895 += 1
-local _a896 = _a18.mach.slotStatus()
-if not _a896 then return end
-local _a897 = _a11.SlotPet and _a896.petNext and _a896.petCost
-and (_a896.dia - _a11.SlotReserve) >= _a896.petCost
-local _a898 = _a11.SlotEgg and _a896.eggEnd and _a896.eggCost
-and (_a896.dia - _a11.SlotReserve) >= _a896.eggCost
-if _a897 and _a898 then
-if _a896.eggCost < _a896.petCost then _a897 = false else _a898 = false end
+local _a928 = 0
+local _a929 = 0
+while _a12.slots and not _a18.ctl.stopped() and _a929 < 40 do
+_a929 += 1
+local _a930 = _a18.mach.slotStatus()
+if not _a930 then return end
+local _a931 = _a11.SlotPet and _a930.petNext and _a930.petCost
+and (_a930.dia - _a11.SlotReserve) >= _a930.petCost
+local _a932 = _a11.SlotEgg and _a930.eggEnd and _a930.eggCost
+and (_a930.dia - _a11.SlotReserve) >= _a930.eggCost
+if _a931 and _a932 then
+if _a930.eggCost < _a930.petCost then _a931 = false else _a932 = false end
 end
-if not (_a897 or _a898) then break end
-local _a899, _a900, _a901, _a902
-local function _a903()
-if _a897 then
-pcall(function() _a899, _a900 = _a16.R_PetSlot:InvokeServer(_a896.petNext) end)
+if not (_a931 or _a932) then break end
+local _a933, _a934, _a935, _a936
+local function _a937()
+if _a931 then
+pcall(function() _a933, _a934 = _a16.R_PetSlot:InvokeServer(_a930.petNext) end)
 else
-pcall(function() _a899, _a900 = _a16.R_EggSlot:InvokeServer(_a896.eggEnd) end)
+pcall(function() _a933, _a934 = _a16.R_EggSlot:InvokeServer(_a930.eggEnd) end)
 end
 end
-if _a897 then
-_a901 = ("펫 장착 슬롯 #%d (%s 다이아)"):format(_a896.petNext, _a6(_a896.petCost, 0))
-_a902 = "EquipSlotsMachine"
+if _a931 then
+_a935 = ("펫 장착 슬롯 #%d (%s 다이아)"):format(_a930.petNext, _a6(_a930.petCost, 0))
+_a936 = "EquipSlotsMachine"
 else
-_a901 = ("알 부화 슬롯 %d칸 → %d (%s 다이아)"):format(
-_a896.eggSize, _a896.eggEnd, _a6(_a896.eggCost, 0))
-_a902 = "EggSlotsMachine"
+_a935 = ("알 부화 슬롯 %d칸 → %d (%s 다이아)"):format(
+_a930.eggSize, _a930.eggEnd, _a6(_a930.eggCost, 0))
+_a936 = "EggSlotsMachine"
 end
-_a903()
-if not _a899 and tostring(_a900):find("far away") then
-local _a904 = _a18.move.machinePos(_a902)
-if _a904 then
-_a18.ctl.setAct("슬롯 머신으로 이동", _a902)
-_a18.move.glideTo(_a904)
+_a937()
+if not _a933 and tostring(_a934):find("far away") then
+local _a938 = _a18.move.machinePos(_a936)
+if _a938 then
+_a18.ctl.setAct("슬롯 머신으로 이동", _a936)
+_a18.move.glideTo(_a938)
 task.wait(0.25)
-_a899, _a900 = nil, nil
-_a903()
+_a933, _a934 = nil, nil
+_a937()
 else
-_a900 = "머신 위치를 못 찾음 (" .. _a902 .. ")"
+_a934 = "머신 위치를 못 찾음 (" .. _a936 .. ")"
 end
 end
-if _a899 then
-_a894 += 1
+if _a933 then
+_a928 += 1
 _a13.mslot += 1
 _a18.mach.slotSaid = nil
-_a18.ctl.setAct("슬롯 구매", _a901)
-_a5("  ⬆ " .. _a901)
+_a18.ctl.setAct("슬롯 구매", _a935)
+_a5("  ⬆ " .. _a935)
 task.wait(0.35)
 else
-local _a905 = _a901 .. " 실패: " .. tostring(_a900)
-if _a18.mach.slotSaid ~= _a905 then
-_a18.mach.slotSaid = _a905
-_a5("[슬롯] " .. _a905)
+local _a939 = _a935 .. " 실패: " .. tostring(_a934)
+if _a18.mach.slotSaid ~= _a939 then
+_a18.mach.slotSaid = _a939
+_a5("[슬롯] " .. _a939)
 end
 break
 end
 end
-if _a894 > 0 then
-local _a906 = _a18.mach.slotStatus()
+if _a928 > 0 then
+local _a940 = _a18.mach.slotStatus()
 _a5(("[슬롯] %d개 구매 — 장착 %s / 한번에 %s개 부화 (다이아 %s 남음)"):format(
-_a894, tostring(_a906 and _a906.maxEquip), tostring(_a906 and _a906.maxHatch),
+_a928, tostring(_a940 and _a940.maxEquip), tostring(_a940 and _a940.maxHatch),
 _a6(_a60("Diamonds"), 0)))
 end
 end
 function _a18.mach.upgList()
-local _a907 = {}
-if not _a16.Upg then return _a907 end
-local _a908, _a909 = pcall(_a16.Upg.All)
-if not (_a908 and type(_a909) == "table") then return _a907 end
-for _a910, _a911 in ipairs(_a909) do
-local _a912, _a913, _a914 = rawget(_a911, "UpgradeID"), rawget(_a911, "ZoneID"), rawget(_a911, "UpgradeTier")
-if _a912 and _a913 and _a914 then
-local _a915 = false
+local _a941 = {}
+if not _a16.Upg then return _a941 end
+local _a942, _a943 = pcall(_a16.Upg.All)
+if not (_a942 and type(_a943) == "table") then return _a941 end
+for _a944, _a945 in ipairs(_a943) do
+local _a946, _a947, _a948 = rawget(_a945, "UpgradeID"), rawget(_a945, "ZoneID"), rawget(_a945, "UpgradeTier")
+if _a946 and _a947 and _a948 then
+local _a949 = false
 if rawget(_a16.Upg, "Owns") then
-local _a916, _a917 = pcall(_a16.Upg.Owns, _a912, _a913)
-_a915 = _a916 and _a917 and true or false
+local _a950, _a951 = pcall(_a16.Upg.Owns, _a946, _a947)
+_a949 = _a950 and _a951 and true or false
 end
-local _a918 = _a18.move.ownsZone(_a913)
-local _a919 = _a16.DirUpg and rawget(_a16.DirUpg, _a912)
-local _a920 = _a919 and rawget(_a919, "TierCosts")
-local _a921 = _a920 and tonumber(_a920[_a914])
-local _a922 = "Diamonds"
-local _a923 = _a919 and rawget(_a919, "TierCurrencies")
-local _a924 = _a923 and _a923[_a914]
-if type(_a924) == "table" and rawget(_a924, "_id") then _a922 = rawget(_a924, "_id") end
-local _a925 = rawget(_a911, "Model")
-local _a926
-if typeof(_a925) == "Instance" then
-if _a925:IsA("BasePart") then _a926 = _a925.Position
+local _a952 = _a18.move.ownsZone(_a947)
+local _a953 = _a16.DirUpg and rawget(_a16.DirUpg, _a946)
+local _a954 = _a953 and rawget(_a953, "TierCosts")
+local _a955 = _a954 and tonumber(_a954[_a948])
+local _a956 = "Diamonds"
+local _a957 = _a953 and rawget(_a953, "TierCurrencies")
+local _a958 = _a957 and _a957[_a948]
+if type(_a958) == "table" and rawget(_a958, "_id") then _a956 = rawget(_a958, "_id") end
+local _a959 = rawget(_a945, "Model")
+local _a960
+if typeof(_a959) == "Instance" then
+if _a959:IsA("BasePart") then _a960 = _a959.Position
 else
-local _a927, _a928 = pcall(function() return _a925:GetPivot() end)
-if _a927 and _a928 then _a926 = _a928.Position end
+local _a961, _a962 = pcall(function() return _a959:GetPivot() end)
+if _a961 and _a962 then _a960 = _a962.Position end
 end
 end
-_a907[#_a907 + 1] = {
-id = _a912, zone = _a913, tier = _a914, cost = _a921, cur = _a922,
-bought = _a915, zoneOwned = _a918,
-buyable = _a918 and not _a915,
-pos = _a926, model = _a925,
+_a941[#_a941 + 1] = {
+id = _a946, zone = _a947, tier = _a948, cost = _a955, cur = _a956,
+bought = _a949, zoneOwned = _a952,
+buyable = _a952 and not _a949,
+pos = _a960, model = _a959,
 }
 end
 end
-table.sort(_a907, function(_a929, _a930) return (_a929.cost or math.huge) < (_a930.cost or math.huge) end)
-return _a907
+table.sort(_a941, function(_a963, _a964) return (_a963.cost or math.huge) < (_a964.cost or math.huge) end)
+return _a941
 end
 function _a18.mach.cycleUpg()
 if not _a16.R_Upg then _a5("[맵업글] Upgrades_Purchase 리모트 없음") return end
-local _a931 = _a18.mach.upgList()
-if #_a931 == 0 then return end
-local _a932 = 0
-for _a933, _a934 in ipairs(_a931) do
+local _a965 = _a18.mach.upgList()
+if #_a965 == 0 then return end
+local _a966 = 0
+for _a967, _a968 in ipairs(_a965) do
 if not _a12.mapupg then break end
-if _a934.buyable and _a934.cost then
-local _a935 = _a60(_a934.cur or "Diamonds")
-if _a935 - _a11.UpgReserve < _a934.cost then break end
-if _a11.UpgTp and _a934.pos and _a934.zone == _a18.move.curZone() then
-_a18.move.glideTo(_a934.pos)
+if _a968.buyable and _a968.cost then
+local _a969 = _a60(_a968.cur or "Diamonds")
+if _a969 - _a11.UpgReserve < _a968.cost then break end
+if _a11.UpgTp and _a968.pos and _a968.zone == _a18.move.curZone() then
+_a18.move.glideTo(_a968.pos)
 end
-local _a936, _a937
-pcall(function() _a936, _a937 = _a16.R_Upg:InvokeServer(_a934.id, _a934.zone) end)
-if _a936 then
-_a932 += 1
+local _a970, _a971
+pcall(function() _a970, _a971 = _a16.R_Upg:InvokeServer(_a968.id, _a968.zone) end)
+if _a970 then
+_a966 += 1
 _a13.mapupg += 1
-_a18.ctl.setAct("맵 업글", _a934.id .. " T" .. _a934.tier)
+_a18.ctl.setAct("맵 업글", _a968.id .. " T" .. _a968.tier)
 _a5(("  ▲ 맵업글  %s T%d  @%s   (%s 다이아)"):format(
-_a934.id, _a934.tier, _a934.zone, _a6(_a934.cost, 0)))
-elseif _a937 then
+_a968.id, _a968.tier, _a968.zone, _a6(_a968.cost, 0)))
+elseif _a971 then
 _a5(("[맵업글] %s T%d @%s 실패: %s"):format(
-_a934.id, _a934.tier, _a934.zone, tostring(_a937)))
+_a968.id, _a968.tier, _a968.zone, tostring(_a971)))
 end
 task.wait(_a11.ActionGap)
 end
 end
-if _a932 > 0 then
-_a5(("[맵업글] %d개 구매  (다이아 %s 남음)"):format(_a932, _a6(_a60("Diamonds"), 0)))
+if _a966 > 0 then
+_a5(("[맵업글] %d개 구매  (다이아 %s 남음)"):format(_a966, _a6(_a60("Diamonds"), 0)))
 end
 end
-local function _a938()
-local _a939 = _a45()
-if not _a939 then return nil end
-local _a940 = tonumber(rawget(_a939, "Rebirths")) or 0
-local _a941 = _a940 + 1
-local _a942
+local function _a972()
+local _a973 = _a45()
+if not _a973 then return nil end
+local _a974 = tonumber(rawget(_a973, "Rebirths")) or 0
+local _a975 = _a974 + 1
+local _a976
 if _a16.Rebirth and rawget(_a16.Rebirth, "GetNextRebirth") then
-local _a943, _a944 = pcall(_a16.Rebirth.GetNextRebirth, _a939)
-if _a943 then _a942 = _a944 end
+local _a977, _a978 = pcall(_a16.Rebirth.GetNextRebirth, _a973)
+if _a977 then _a976 = _a978 end
 end
-return { current = _a940, nextN = _a941, def = _a942 }
+return { current = _a974, nextN = _a975, def = _a976 }
 end
-local function _a945()
+local function _a979()
 if not _a16.R_Reb then _a5("[리버스] Rebirth_Request 리모트 없음") return end
-local _a946 = _a938()
-if not _a946 then
+local _a980 = _a972()
+if not _a980 then
 _a18.auto.rebNote = "세이브를 못 읽음"
 return
 end
-local _a947, _a948
-pcall(function() _a947, _a948 = _a16.R_Reb:InvokeServer(_a946.nextN) end)
-if _a947 then
+local _a981, _a982
+pcall(function() _a981, _a982 = _a16.R_Reb:InvokeServer(_a980.nextN) end)
+if _a981 then
 _a13.mreb += 1
 _a18.auto.rebNote, _a18.auto.rebSaid = nil, nil
-_a5(("  ★ 리버스 %d → %d"):format(_a946.current, _a946.nextN))
+_a5(("  ★ 리버스 %d → %d"):format(_a980.current, _a980.nextN))
 task.wait(0.5)
 _a18.screen.dismissRewardScreens(25)
 else
-_a18.auto.rebNote = ("%d → %d : %s"):format(_a946.current, _a946.nextN,
-_a948 and tostring(_a948) or "조건 미달 (리버스 킬/존 요구치)")
+_a18.auto.rebNote = ("%d → %d : %s"):format(_a980.current, _a980.nextN,
+_a982 and tostring(_a982) or "조건 미달 (리버스 킬/존 요구치)")
 if _a18.auto.rebSaid ~= _a18.auto.rebNote then
 _a18.auto.rebSaid = _a18.auto.rebNote
 _a5("[리버스] " .. _a18.auto.rebNote)
@@ -2704,24 +2795,24 @@ _a18.auto.SIDE = {
 { key = "items",  label = "버프 유지",     run = "items",  fn = function() _a18.item.cycleItems() end },
 }
 _a18.auto.STEPS = {
-{ key = "mreb",   label = "리버스",  run = "mreb",  fn = function() _a945() end,
+{ key = "mreb",   label = "리버스",  run = "mreb",  fn = function() _a979() end,
 hold = true },
 { key = "zone",   label = "존 해금", run = "zone",  fn = function() _a88() end,
 hold = true },
 { key = "quest",  label = "랭크 퀘스트+보상", run = "quest", fn = function()
-local _a949 = _a12.farm
+local _a983 = _a12.farm
 _a12.farm = true
 pcall(_a70)
-_a12.farm = _a949
-local _a950 = _a18.quest.cycle()
-if not _a950 then
-local _a951 = _a18.move.bestZone()
-if _a951 then
-local _a952, _a953 = _a18.move.goToZone(_a951)
-if not _a952 then
-if _a953 and _a18.auto.idleMoveSaid ~= tostring(_a953) then
-_a18.auto.idleMoveSaid = tostring(_a953)
-_a5("[자동] 최고 존 이동 실패: " .. tostring(_a953))
+_a12.farm = _a983
+local _a984 = _a18.quest.cycle()
+if not _a984 then
+local _a985 = _a18.move.bestZone()
+if _a985 then
+local _a986, _a987 = _a18.move.goToZone(_a985)
+if not _a986 then
+if _a987 and _a18.auto.idleMoveSaid ~= tostring(_a987) then
+_a18.auto.idleMoveSaid = tostring(_a987)
+_a5("[자동] 최고 존 이동 실패: " .. tostring(_a987))
 end
 else
 _a18.auto.idleMoveSaid = nil
@@ -2731,164 +2822,164 @@ if not _a11.IdleHatch then
 _a18.ctl.setAct("파밍 중", ("퀘스트 없음 @%s"):format(tostring(_a18.move.curZone())))
 return
 end
-local _a954 = _a118()
-local _a955 = math.max(1, _a11.HatchMinAfford or 10)
-if _a954 and _a954.price and _a954.canBuy < _a955 then
+local _a988 = _a118()
+local _a989 = math.max(1, _a11.HatchMinAfford or 10)
+if _a988 and _a988.price and _a988.canBuy < _a989 then
 _a18.ctl.setAct("돈 버는 중", ("%s  %d/%d개분  개당 %s %s"):format(
-tostring(_a18.move.curZone()), _a954.canBuy, _a955,
-_a6(_a954.price, 0), tostring(_a954.currency)))
+tostring(_a18.move.curZone()), _a988.canBuy, _a989,
+_a6(_a988.price, 0), tostring(_a988.currency)))
 else
 _a18.ctl.setAct("대기 중 부화")
-local _a956 = _a12.mhatch
+local _a990 = _a12.mhatch
 _a12.mhatch = true
 pcall(_a129)
-_a12.mhatch = _a956
+_a12.mhatch = _a990
 end
 end
 end },
 }
 _a11.StepOn = {}
-for _a957, _a958 in ipairs(_a18.auto.SIDE) do _a11.StepOn[_a958.key] = true end
-for _a959, _a960 in ipairs(_a18.auto.STEPS) do _a11.StepOn[_a960.key] = true end
-local function _a961(_a962, _a963, _a964, _a965)
-if not _a11.StepOn[_a962.key] then
-_a965[#_a965 + 1] = ("%-14s 꺼져있음"):format(_a962.label)
+for _a991, _a992 in ipairs(_a18.auto.SIDE) do _a11.StepOn[_a992.key] = true end
+for _a993, _a994 in ipairs(_a18.auto.STEPS) do _a11.StepOn[_a994.key] = true end
+local function _a995(_a996, _a997, _a998, _a999)
+if not _a11.StepOn[_a996.key] then
+_a999[#_a999 + 1] = ("%-14s 꺼져있음"):format(_a996.label)
 return
 end
-if _a962.hold and _a963 then
-_a965[#_a965 + 1] = ("%-14s 보류 (%s)"):format(
-_a962.label, _a964 and tostring(_a964.title) or "?")
-if _a18.auto.heldMsg ~= _a962.key then
-_a18.auto.heldMsg = _a962.key
+if _a996.hold and _a997 then
+_a999[#_a999 + 1] = ("%-14s 보류 (%s)"):format(
+_a996.label, _a998 and tostring(_a998.title) or "?")
+if _a18.auto.heldMsg ~= _a996.key then
+_a18.auto.heldMsg = _a996.key
 _a5(("[자동] %s 보류 — best 존이 바뀌면 깨지는 퀘스트 진행 중 (%s)"):format(
-_a962.label, _a964 and tostring(_a964.title) or "?"))
+_a996.label, _a998 and tostring(_a998.title) or "?"))
 end
 return
 end
-if _a962.hold then _a18.auto.heldMsg = nil end
-_a18.auto.step = _a962.label
-_a18.ctl.now.step = _a962.label
-_a18.ctl.setAct("시작", _a962.label)
-local _a966 = os.clock()
-local _a967 = _a12[_a962.run]
-_a12[_a962.run] = true
-local _a968, _a969 = pcall(_a962.fn)
-_a12[_a962.run] = _a967
-local _a970 = os.clock() - _a966
-if not _a968 then
-_a965[#_a965 + 1] = ("%-14s 오류: %s"):format(_a962.label, tostring(_a969))
-_a5("[자동] " .. _a962.label .. " 오류: " .. tostring(_a969))
+if _a996.hold then _a18.auto.heldMsg = nil end
+_a18.auto.step = _a996.label
+_a18.ctl.now.step = _a996.label
+_a18.ctl.setAct("시작", _a996.label)
+local _a1000 = os.clock()
+local _a1001 = _a12[_a996.run]
+_a12[_a996.run] = true
+local _a1002, _a1003 = pcall(_a996.fn)
+_a12[_a996.run] = _a1001
+local _a1004 = os.clock() - _a1000
+if not _a1002 then
+_a999[#_a999 + 1] = ("%-14s 오류: %s"):format(_a996.label, tostring(_a1003))
+_a5("[자동] " .. _a996.label .. " 오류: " .. tostring(_a1003))
 else
-local _a971 = (_a962.key == "zone" and _a18.auto.zoneNote)
-or (_a962.key == "mreb" and _a18.auto.rebNote) or nil
-_a965[#_a965 + 1] = ("%-14s 실행 %.1f초%s"):format(
-_a962.label, _a970, _a971 and ("  → " .. _a971) or "")
+local _a1005 = (_a996.key == "zone" and _a18.auto.zoneNote)
+or (_a996.key == "mreb" and _a18.auto.rebNote) or nil
+_a999[#_a999 + 1] = ("%-14s 실행 %.1f초%s"):format(
+_a996.label, _a1004, _a1005 and ("  → " .. _a1005) or "")
 end
 end
 function _a18.auto.master()
-local _a972 = {}
-_a18.auto.lastTrace = _a972
+local _a1006 = {}
+_a18.auto.lastTrace = _a1006
 _a18.auto.lastPassAt = os.clock()
 if _a18.screen.rewardScreenUp() then
-_a972[#_a972 + 1] = "보상 화면 넘기는 중"
+_a1006[#_a1006 + 1] = "보상 화면 넘기는 중"
 _a18.screen.dismissRewardScreens(15)
 end
-for _a973, _a974 in ipairs(_a18.auto.SIDE) do
+for _a1007, _a1008 in ipairs(_a18.auto.SIDE) do
 if not _a12.auto or _a18.ctl.stopped() then return end
-_a961(_a974, false, nil, _a972)
+_a995(_a1008, false, nil, _a1006)
 end
-local _a975, _a976 = false, nil
-if _a11.HoldZoneForQuest then _a975, _a976 = _a18.quest.bestDepActive() end
-for _a977, _a978 in ipairs(_a18.auto.STEPS) do
+local _a1009, _a1010 = false, nil
+if _a11.HoldZoneForQuest then _a1009, _a1010 = _a18.quest.bestDepActive() end
+for _a1011, _a1012 in ipairs(_a18.auto.STEPS) do
 if not _a12.auto or _a18.ctl.stopped() then break end
-_a961(_a978, _a975, _a976, _a972)
+_a995(_a1012, _a1009, _a1010, _a1006)
 end
 _a18.auto.step = nil
 if not _a18.ctl.lockGoal then
 _a18.ctl.now.step = "대기"
 _a18.ctl.setAct("다음 바퀴 대기", ("%.0f초 주기"):format(_a11.AutoInterval or 5))
 end
-local _a979 = {}
-for _a980, _a981 in ipairs(_a972) do _a979[#_a979 + 1] = (_a981:gsub("[%d%.]+초", "")) end
-_a979 = table.concat(_a979, " | ")
-if _a979 ~= _a18.auto.lastSig then
-_a18.auto.lastSig = _a979
+local _a1013 = {}
+for _a1014, _a1015 in ipairs(_a1006) do _a1013[#_a1013 + 1] = (_a1015:gsub("[%d%.]+초", "")) end
+_a1013 = table.concat(_a1013, " | ")
+if _a1013 ~= _a18.auto.lastSig then
+_a18.auto.lastSig = _a1013
 _a5("[자동] 바퀴 " .. (_a18.auto.passN or 0))
-for _a982, _a983 in ipairs(_a972) do _a5("    " .. _a983) end
+for _a1016, _a1017 in ipairs(_a1006) do _a5("    " .. _a1017) end
 end
 _a18.auto.passN = (_a18.auto.passN or 0) + 1
 end
-local function _a984()
+local function _a1018()
 if not _a10.R_PROMO then _a5("[타워업글] 리모트 없음") return end
-local _a985 = _a14()
-if not _a985 then return end
-local _a986 = _a15(_a985)
-table.sort(_a986, function(_a987, _a988) return (_a987.dps or 0) > (_a988.dps or 0) end)
-local _a989, _a990 = 0, 0
-for _a991, _a992 in ipairs(_a986) do
+local _a1019 = _a14()
+if not _a1019 then return end
+local _a1020 = _a15(_a1019)
+table.sort(_a1020, function(_a1021, _a1022) return (_a1021.dps or 0) > (_a1022.dps or 0) end)
+local _a1023, _a1024 = 0, 0
+for _a1025, _a1026 in ipairs(_a1020) do
 if not _a12.towerup then break end
-if _a992.id then
-local _a993
-pcall(function() _a993 = _a10.R_PROMO:InvokeServer(_a992.id) end)
-if _a993 ~= nil and _a993 ~= false then
-_a989 += 1
-_a5(("  ▲ 타워업글  %s  Lv%s → Lv%s"):format(tostring(_a992.kind), tostring(_a992.up), tostring((_a992.up or 0) + 1)))
-_a990 = 0
+if _a1026.id then
+local _a1027
+pcall(function() _a1027 = _a10.R_PROMO:InvokeServer(_a1026.id) end)
+if _a1027 ~= nil and _a1027 ~= false then
+_a1023 += 1
+_a5(("  ▲ 타워업글  %s  Lv%s → Lv%s"):format(tostring(_a1026.kind), tostring(_a1026.up), tostring((_a1026.up or 0) + 1)))
+_a1024 = 0
 task.wait(_a11.ActionGap)
 else
-_a990 += 1
-if _a990 >= 5 then break end
+_a1024 += 1
+if _a1024 >= 5 then break end
 end
 end
 end
-_a5("[타워업글] " .. _a989 .. "건")
+_a5("[타워업글] " .. _a1023 .. "건")
 end
-local _a994 = {}
-local _a995 = {}
-local function _a996(_a997, _a998)
-local _a999 = tostring(_a998)
-local _a1000 = _a995[_a997]
-if _a1000 and _a1000.msg == _a999 then
-_a1000.n += 1
-if _a1000.n % 20 == 0 then
-_a5(("[%s 오류] %s   (%d회 반복)"):format(_a997, _a999, _a1000.n))
+local _a1028 = {}
+local _a1029 = {}
+local function _a1030(_a1031, _a1032)
+local _a1033 = tostring(_a1032)
+local _a1034 = _a1029[_a1031]
+if _a1034 and _a1034.msg == _a1033 then
+_a1034.n += 1
+if _a1034.n % 20 == 0 then
+_a5(("[%s 오류] %s   (%d회 반복)"):format(_a1031, _a1033, _a1034.n))
 end
 return
 end
-_a995[_a997] = { msg = _a999, n = 1 }
-_a5("[" .. _a997 .. " 오류] " .. _a999)
+_a1029[_a1031] = { msg = _a1033, n = 1 }
+_a5("[" .. _a1031 .. " 오류] " .. _a1033)
 end
-local function _a1001(_a1002, _a1003, _a1004, _a1005)
-_a994[_a1002] = (_a994[_a1002] or 0) + 1
-local _a1006 = _a994[_a1002]
+local function _a1035(_a1036, _a1037, _a1038, _a1039)
+_a1028[_a1036] = (_a1028[_a1036] or 0) + 1
+local _a1040 = _a1028[_a1036]
 task.spawn(function()
-while _a12[_a1002] and _a994[_a1002] == _a1006 do
-local _a1007, _a1008 = pcall(_a1004)
-if not _a1007 then _a996(_a1005, _a1008) else _a995[_a1005] = nil end
-local _a1009, _a1010 = _a1003(), 0
-while _a1010 < _a1009 and _a12[_a1002] and _a994[_a1002] == _a1006 do task.wait(0.1) _a1010 += 0.1 end
+while _a12[_a1036] and _a1028[_a1036] == _a1040 do
+local _a1041, _a1042 = pcall(_a1038)
+if not _a1041 then _a1030(_a1039, _a1042) else _a1029[_a1039] = nil end
+local _a1043, _a1044 = _a1037(), 0
+while _a1044 < _a1043 and _a12[_a1036] and _a1028[_a1036] == _a1040 do task.wait(0.1) _a1044 += 0.1 end
 end
-if _a994[_a1002] == _a1006 then _a5("[" .. _a1005 .. "] 중지") end
+if _a1028[_a1036] == _a1040 then _a5("[" .. _a1039 .. "] 중지") end
 end)
 end
 do
-local _a1011 = {
+local _a1045 = {
 farm   = { function() return _a11.FarmInterval end,      function() _a70() end,      "파밍" },
 zone   = { function() return _a11.ZoneInterval end,      function() _a88() end,      "존" },
 mhatch = { function() return _a11.MainHatchInterval end, function() _a129() end, "부화" },
 }
-function _a18.auto.turnOn(_a1012, _a1013)
+function _a18.auto.turnOn(_a1046, _a1047)
 if _a12.auto then return end
-if _a12[_a1012] then return end
-local _a1014 = _a1011[_a1012]
-if not _a1014 then return end
-_a12[_a1012] = true
-_a1001(_a1012, _a1014[1], _a1014[2], _a1014[3])
+if _a12[_a1046] then return end
+local _a1048 = _a1045[_a1046]
+if not _a1048 then return end
+_a12[_a1046] = true
+_a1035(_a1046, _a1048[1], _a1048[2], _a1048[3])
 if _a18.auto.refresh then _a18.auto.refresh() end
-_a5("[퀘스트] " .. tostring(_a1013) .. " ON")
+_a5("[퀘스트] " .. tostring(_a1047) .. " ON")
 end
 end
 _a1.MG, _a1.QS, _a1.saveGet, _a1.currencyAmount, _a1.cycleFarm, _a1.zoneStatus = _a16, _a18, _a45, _a60, _a70, _a84
-_a1.cycleZone, _a1.bestMainEgg, _a1.mainHatchStatus, _a1.cycleMainHatch, _a1.mainRebirthStatus, _a1.cycleMainRebirth = _a88, _a93, _a118, _a129, _a938, _a945
-_a1.cycleTowerUp, _a1.startLoop = _a984, _a1001
+_a1.cycleZone, _a1.bestMainEgg, _a1.mainHatchStatus, _a1.cycleMainHatch, _a1.mainRebirthStatus, _a1.cycleMainRebirth = _a88, _a93, _a118, _a129, _a972, _a979
+_a1.cycleTowerUp, _a1.startLoop = _a1018, _a1035
 end
