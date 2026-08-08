@@ -488,146 +488,89 @@ end
 end)
 end
 end)
-local _a212 = _a114("dash", "대시보드", 10)
-local _a213 = _a114("event", "이벤트", 20)
+local _a212 = _a114("event", "이벤트", 20)
 do
-local _a214 = _a130(_a212, "전체 제어", nil)
-_a160(_a214, {
-{ label = "권장 전부 ON", col = _a55.good, fn = function()
-for _a215, _a216 in ipairs({ "place", "merchant", "crop", "expand", "hatch" }) do
-if not _a12[_a216] then
-_a12[_a216] = true
-if _a216 == "place"    then _a54(_a216, function() return _a10.PlaceInterval end, _a19, "배치") end
-if _a216 == "merchant" then _a54(_a216, function() return _a10.MerchantInterval end, _a20, "구매") end
-if _a216 == "crop"     then _a54(_a216, function() return _a10.CropInterval end, _a29, "씨앗") end
-if _a216 == "expand"   then _a54(_a216, function() return _a10.ExpandInterval end, _a32, "확장") end
-if _a216 == "hatch"    then _a54(_a216, function() return _a10.HatchInterval end, _a36, "뽑기") end
-end
-end
-_a137()
-_a6("[전체] 배치/구매/씨앗/확장/뽑기 ON  (업글·리버스는 따로 켜세요)")
-end },
-{ label = "전부 정지", col = _a55.bad, fn = function()
-_a12.place, _a12.merchant, _a12.upgrade = false, false, false
-_a12.towerup, _a12.crop, _a12.expand, _a12.rebirth, _a12.hatch, _a12.luck = false, false, false, false, false, false
-_a12.farm, _a12.zone, _a12.mhatch, _a12.rank, _a12.mreb = false, false, false, false, false
-_a137()
-_a6("[전체] 정지")
-end },
-})
-local _a217 = _a130(_a212, "현황", nil)
-_a160(_a217, {
-{ label = "밭 / 타워", col = _a55.accent, fn = function()
-local _a218, _a219, _a220, _a221 = _a15()
-_a6("")
-_a6("──── 현재 상태 ────")
-_a6("레인 " .. tostring(_a221) .. " / plot " .. (_a220 and "O" or "X")
-.. " / world " .. (_a218 and "O" or "X"))
-local _a222 = _a16(_a220, _a221)
-local _a223 = _a17(_a218)
-_a6("슬롯 " .. #_a222 .. " / 배치 " .. #_a223)
-local _a224, _a225 = 0, {}
-for _a226, _a227 in ipairs(_a223) do
-_a224 += (_a227.dps or 0)
-_a225[tostring(_a227.kind)] = (_a225[tostring(_a227.kind)] or 0) + 1
-end
-_a6("총 DPS " .. _a7(_a224))
-for _a228, _a229 in pairs(_a225) do _a6("  " .. _a228 .. " × " .. _a229) end
-local _a230 = _a18()
-_a6("")
-_a6("배치 가능 " .. #_a230 .. "종")
-for _a231 = 1, math.min(10, #_a230) do
-local _a232 = _a230[_a231]
-_a6(("  %-22s %-7s 남은 %-3s DPS %s"):format(
-tostring(_a232.id), tostring(_a232.vr or "-"), tostring(_a232.copies), _a7(_a232.dps)))
-end
-_a97("log")
-end },
-{ label = "로그 보기", col = _a55.cardHi, fn = function() _a97("log") end },
-})
-end
-do
-local _a233, _a234 = _a130(_a213, "자동 배치 / 교체", nil)
-_a140(_a234, "place", function()
+local _a213, _a214 = _a130(_a212, "자동 배치 / 교체", nil)
+_a140(_a214, "place", function()
 _a54("place", function() return _a10.PlaceInterval end, _a19, "배치")
 end)
-_a151(_a233, {
-{ label = "주기", value = _a10.PlaceInterval, onChange = function(_a235)
-local _a236 = tonumber(_a235) if _a236 and _a236 >= 3 then _a10.PlaceInterval = _a236 end
+_a151(_a213, {
+{ label = "주기", value = _a10.PlaceInterval, onChange = function(_a215)
+local _a216 = tonumber(_a215) if _a216 and _a216 >= 3 then _a10.PlaceInterval = _a216 end
 end },
-{ label = "교체 배수", value = _a10.SwapMargin, onChange = function(_a237)
-local _a238 = tonumber(_a237) if _a238 and _a238 >= 1 then _a10.SwapMargin = _a238 _a6("[설정] 교체 배수 " .. _a238) end
+{ label = "교체 배수", value = _a10.SwapMargin, onChange = function(_a217)
+local _a218 = tonumber(_a217) if _a218 and _a218 >= 1 then _a10.SwapMargin = _a218 _a6("[설정] 교체 배수 " .. _a218) end
 end },
-{ label = "DoT 반영", value = _a10.DotFactor, onChange = function(_a239)
-local _a240 = tonumber(_a239) if _a240 and _a240 >= 0 and _a240 <= 1 then _a10.DotFactor = _a240 end
+{ label = "DoT 반영", value = _a10.DotFactor, onChange = function(_a219)
+local _a220 = tonumber(_a219) if _a220 and _a220 >= 0 and _a220 <= 1 then _a10.DotFactor = _a220 end
 end },
 })
-_a170(_a233, "업글 타워 보호",
+_a170(_a213, "업글 타워 보호",
 function() return _a10.ProtectUpgraded end,
-function(_a241) _a10.ProtectUpgraded = _a241
-_a6("[설정] 업글 보호 " .. (_a241 and "ON — 업글된 건 안 건드림" or "OFF — 약하면 교체")) end)
-_a160(_a233, {
+function(_a221) _a10.ProtectUpgraded = _a221
+_a6("[설정] 업글 보호 " .. (_a221 and "ON — 업글된 건 안 건드림" or "OFF — 약하면 교체")) end)
+_a160(_a213, {
 { label = "지금 1회 실행", col = _a55.accent, fn = function()
 task.spawn(function() _a12.place = true _a19() _a12.place = false _a97("log") end)
 end },
 })
 end
 do
-local _a242, _a243 = _a130(_a213, "머천트 자동 구매", nil)
-_a140(_a243, "merchant", function()
+local _a222, _a223 = _a130(_a212, "머천트 자동 구매", nil)
+_a140(_a223, "merchant", function()
 _a54("merchant", function() return _a10.MerchantInterval end, _a20, "구매")
 end)
-_a151(_a242, {
-{ label = "머천트 ID", value = _a10.MerchantId, onChange = function(_a244)
-if _a244 ~= "" then _a10.MerchantId = _a244 _a6("[설정] 머천트 " .. _a244) end
+_a151(_a222, {
+{ label = "머천트 ID", value = _a10.MerchantId, onChange = function(_a224)
+if _a224 ~= "" then _a10.MerchantId = _a224 _a6("[설정] 머천트 " .. _a224) end
 end },
-{ label = "주기", value = _a10.MerchantInterval, onChange = function(_a245)
-local _a246 = tonumber(_a245) if _a246 and _a246 >= 5 then _a10.MerchantInterval = _a246 end
+{ label = "주기", value = _a10.MerchantInterval, onChange = function(_a225)
+local _a226 = tonumber(_a225) if _a226 and _a226 >= 5 then _a10.MerchantInterval = _a226 end
 end },
 })
-_a160(_a242, {
+_a160(_a222, {
 { label = "지금 1회 구매", col = _a55.accent, fn = function()
 task.spawn(function() _a12.merchant = true _a20() _a12.merchant = false _a97("log") end)
 end },
 })
 end
 do
-local _a247, _a248 = _a130(_a213, "업그레이드 머신", nil)
-_a140(_a248, "upgrade", function()
+local _a227, _a228 = _a130(_a212, "업그레이드 머신", nil)
+_a140(_a228, "upgrade", function()
 _a54("upgrade", function() return _a10.UpgradeInterval end, _a24, "머신업글")
 end)
-_a151(_a247, {
-{ label = "주기", value = _a10.UpgradeInterval, onChange = function(_a249)
-local _a250 = tonumber(_a249) if _a250 and _a250 >= 5 then _a10.UpgradeInterval = _a250 end
+_a151(_a227, {
+{ label = "주기", value = _a10.UpgradeInterval, onChange = function(_a229)
+local _a230 = tonumber(_a229) if _a230 and _a230 >= 5 then _a10.UpgradeInterval = _a230 end
 end },
-{ label = "최소 잔액", value = _a10.MinSunflowers, onChange = function(_a251)
-local _a252 = tonumber(_a251) if _a252 and _a252 >= 0 then _a10.MinSunflowers = _a252
-_a6("[설정] 최소 잔액 " .. _a7(_a252, 0)) end
+{ label = "최소 잔액", value = _a10.MinSunflowers, onChange = function(_a231)
+local _a232 = tonumber(_a231) if _a232 and _a232 >= 0 then _a10.MinSunflowers = _a232
+_a6("[설정] 최소 잔액 " .. _a7(_a232, 0)) end
 end },
 })
-_a170(_a247, "가격 미상 구매",
+_a170(_a227, "가격 미상 구매",
 function() return _a10.BuyUnknownCost end,
-function(_a253) _a10.BuyUnknownCost = _a253 end)
-_a160(_a247, {
+function(_a233) _a10.BuyUnknownCost = _a233 end)
+_a160(_a227, {
 { label = "업글 현황 보기", col = _a55.accent, fn = function()
-local _a254 = _a21()
-local _a255 = _a22()
-_a13.sun = _a254
+local _a234 = _a21()
+local _a235 = _a22()
+_a13.sun = _a234
 _a6("")
 _a6("──── 업그레이드 머신 ────")
-_a6("Sunflowers = " .. _a7(_a254, 0))
-local _a256 = {}
-for _a257, _a258 in ipairs(_a14) do
-local _a259 = _a255[_a258] or 0
-_a256[#_a256 + 1] = { id = _a258, tier = _a259, cost = _a23(_a258, _a259) }
+_a6("Sunflowers = " .. _a7(_a234, 0))
+local _a236 = {}
+for _a237, _a238 in ipairs(_a14) do
+local _a239 = _a235[_a238] or 0
+_a236[#_a236 + 1] = { id = _a238, tier = _a239, cost = _a23(_a238, _a239) }
 end
-table.sort(_a256, function(_a260, _a261)
-return (_a260.cost or math.huge) < (_a261.cost or math.huge)
+table.sort(_a236, function(_a240, _a241)
+return (_a240.cost or math.huge) < (_a241.cost or math.huge)
 end)
-for _a262, _a263 in ipairs(_a256) do
+for _a242, _a243 in ipairs(_a236) do
 _a6(("  %-22s Lv%-3s 다음 %-14s %s"):format(
-_a263.id, tostring(_a263.tier), _a263.cost and _a7(_a263.cost, 0) or "?",
-(_a263.cost and _a263.cost <= _a254) and "← 구매가능" or ""))
+_a243.id, tostring(_a243.tier), _a243.cost and _a7(_a243.cost, 0) or "?",
+(_a243.cost and _a243.cost <= _a234) and "← 구매가능" or ""))
 end
 _a97("log")
 end },
@@ -635,53 +578,53 @@ end },
 task.spawn(function() _a12.upgrade = true _a24() _a12.upgrade = false _a97("log") end)
 end },
 })
-local _a264, _a265 = _a130(_a213, "타워 개별 업글", nil)
-_a140(_a265, "towerup", function()
+local _a244, _a245 = _a130(_a212, "타워 개별 업글", nil)
+_a140(_a245, "towerup", function()
 _a54("towerup", function() return _a10.UpgradeInterval end, _a53, "타워업글")
 end)
 end
 do
-local _a266, _a267 = _a130(_a213, "자동 뽑기", nil)
-_a140(_a267, "hatch", function()
+local _a246, _a247 = _a130(_a212, "자동 뽑기", nil)
+_a140(_a247, "hatch", function()
 _a54("hatch", function() return _a10.HatchInterval end, _a36, "뽑기")
 end)
-_a151(_a266, {
-{ label = "주기", value = _a10.HatchInterval, onChange = function(_a268)
-local _a269 = tonumber(_a268) if _a269 and _a269 >= 1 then _a10.HatchInterval = _a269 end
+_a151(_a246, {
+{ label = "주기", value = _a10.HatchInterval, onChange = function(_a248)
+local _a249 = tonumber(_a248) if _a249 and _a249 >= 1 then _a10.HatchInterval = _a249 end
 end },
-{ label = "한 번에 최대", value = _a10.HatchMax, onChange = function(_a270)
-local _a271 = tonumber(_a270) if _a271 and _a271 >= 1 then _a10.HatchMax = math.floor(_a271) end
+{ label = "한 번에 최대", value = _a10.HatchMax, onChange = function(_a250)
+local _a251 = tonumber(_a250) if _a251 and _a251 >= 1 then _a10.HatchMax = math.floor(_a251) end
 end },
 })
-_a151(_a266, {
-{ label = "예비금", value = _a10.HatchReserve, onChange = function(_a272)
-local _a273 = tonumber(_a272) if _a273 and _a273 >= 0 then _a10.HatchReserve = _a273
-_a6("[설정] 뽑기 예비금 " .. _a7(_a273, 0)) end
+_a151(_a246, {
+{ label = "예비금", value = _a10.HatchReserve, onChange = function(_a252)
+local _a253 = tonumber(_a252) if _a253 and _a253 >= 0 then _a10.HatchReserve = _a253
+_a6("[설정] 뽑기 예비금 " .. _a7(_a253, 0)) end
 end },
-{ label = "알 번호 (0=자동)", value = _a10.HatchEggNum, onChange = function(_a274)
-local _a275 = tonumber(_a274) if _a275 and _a275 >= 0 and _a275 <= 12 then
-_a10.HatchEggNum = math.floor(_a275)
+{ label = "알 번호 (0=자동)", value = _a10.HatchEggNum, onChange = function(_a254)
+local _a255 = tonumber(_a254) if _a255 and _a255 >= 0 and _a255 <= 12 then
+_a10.HatchEggNum = math.floor(_a255)
 table.clear(_a11)
-_a6("[설정] 알 번호 " .. (_a275 == 0 and "자동" or _a275)) end
+_a6("[설정] 알 번호 " .. (_a255 == 0 and "자동" or _a255)) end
 end },
 })
-_a160(_a266, {
+_a160(_a246, {
 { label = "뽑기 현황 보기", col = _a55.accent, fn = function()
-local _a276 = _a35()
-_a13.sun = _a276.sun
+local _a256 = _a35()
+_a13.sun = _a256.sun
 _a6("")
 _a6("──── 뽑기 현황 ────")
-_a6("  알 등급     " .. _a276.id)
-_a6("  알 uid      " .. tostring(_a276.uid))
-_a6("  개당 비용   " .. (_a276.cost and _a7(_a276.cost, 0) or "?"))
-_a6("  Sunflowers  " .. _a7(_a276.sun, 0))
+_a6("  알 등급     " .. _a256.id)
+_a6("  알 uid      " .. tostring(_a256.uid))
+_a6("  개당 비용   " .. (_a256.cost and _a7(_a256.cost, 0) or "?"))
+_a6("  Sunflowers  " .. _a7(_a256.sun, 0))
 _a6("  예비금      " .. _a7(_a10.HatchReserve, 0))
-_a6("  지금 가능   " .. _a276.canBuy .. "회")
+_a6("  지금 가능   " .. _a256.canBuy .. "회")
 _a6("")
-_a6("  월드의 알 " .. _a276.eggCount .. "개")
-for _a277, _a278 in ipairs(_a276.eggs) do
-if _a277 > 5 then break end
-_a6(("    %s  거리 %s"):format(_a278.uid, _a7(_a278.dist)))
+_a6("  월드의 알 " .. _a256.eggCount .. "개")
+for _a257, _a258 in ipairs(_a256.eggs) do
+if _a257 > 5 then break end
+_a6(("    %s  거리 %s"):format(_a258.uid, _a7(_a258.dist)))
 end
 _a6("")
 _a6("  누적 뽑기   " .. _a13.hatched .. "회")
@@ -693,42 +636,42 @@ end },
 })
 end
 do
-local _a279, _a280 = _a130(_a213, "럭 상시 최대 유지", nil)
-_a140(_a280, "luck", function()
+local _a259, _a260 = _a130(_a212, "럭 상시 최대 유지", nil)
+_a140(_a260, "luck", function()
 _a54("luck", function() return _a10.LuckInterval end, _a40, "럭")
 end)
-_a151(_a279, {
-{ label = "주기", value = _a10.LuckInterval, onChange = function(_a281)
-local _a282 = tonumber(_a281) if _a282 and _a282 >= 60 then _a10.LuckInterval = _a282 end
+_a151(_a259, {
+{ label = "주기", value = _a10.LuckInterval, onChange = function(_a261)
+local _a262 = tonumber(_a261) if _a262 and _a262 >= 60 then _a10.LuckInterval = _a262 end
 end },
-{ label = "예비금", value = _a10.LuckReserve, onChange = function(_a283)
-local _a284 = tonumber(_a283) if _a284 and _a284 >= 0 then _a10.LuckReserve = _a284 end
-end },
-})
-_a151(_a279, {
-{ label = "최소 부족분", value = _a10.LuckMinTopUp, onChange = function(_a285)
-local _a286 = tonumber(_a285) if _a286 and _a286 >= 0 then _a10.LuckMinTopUp = _a286 end
+{ label = "예비금", value = _a10.LuckReserve, onChange = function(_a263)
+local _a264 = tonumber(_a263) if _a264 and _a264 >= 0 then _a10.LuckReserve = _a264 end
 end },
 })
-for _a287, _a288 in ipairs(_a37) do
-_a170(_a279, _a288,
-function() return _a10.LuckBoosts[_a288] end,
-function(_a289) _a10.LuckBoosts[_a288] = _a289 end)
+_a151(_a259, {
+{ label = "최소 부족분", value = _a10.LuckMinTopUp, onChange = function(_a265)
+local _a266 = tonumber(_a265) if _a266 and _a266 >= 0 then _a10.LuckMinTopUp = _a266 end
+end },
+})
+for _a267, _a268 in ipairs(_a37) do
+_a170(_a259, _a268,
+function() return _a10.LuckBoosts[_a268] end,
+function(_a269) _a10.LuckBoosts[_a268] = _a269 end)
 end
-_a160(_a279, {
+_a160(_a259, {
 { label = "럭 현황 보기", col = _a55.accent, fn = function()
-local _a290 = _a38()
-_a13.sun = _a290.sun
+local _a270 = _a38()
+_a13.sun = _a270.sun
 _a6("")
 _a6("──── 이벤트 럭 ────")
-_a6("  머신 활성   " .. (_a290.enabled and "O" or "X"))
-_a6("  최대 시간   " .. _a39(_a290.maxSec))
-_a6("  Sunflowers  " .. _a7(_a290.sun, 0))
+_a6("  머신 활성   " .. (_a270.enabled and "O" or "X"))
+_a6("  최대 시간   " .. _a39(_a270.maxSec))
+_a6("  Sunflowers  " .. _a7(_a270.sun, 0))
 _a6("")
-for _a291, _a292 in ipairs(_a290.rows) do
+for _a271, _a272 in ipairs(_a270.rows) do
 _a6(("  %-12s %-14s 부족 %-14s 필요 %s개%s"):format(
-_a292.rarity, _a39(_a292.left), _a39(_a292.deficit), _a7(_a292.need, 0),
-_a292.on and "" or "   (꺼짐)"))
+_a272.rarity, _a39(_a272.left), _a39(_a272.deficit), _a7(_a272.need, 0),
+_a272.on and "" or "   (꺼짐)"))
 end
 _a6("")
 _a6("  효과 : 비활성 0.5배 → 활성 1.0배 (2배)")
@@ -740,57 +683,57 @@ end },
 })
 end
 do
-local _a293, _a294 = _a130(_a213, "자동 씨앗 교체", nil)
-_a140(_a294, "crop", function()
+local _a273, _a274 = _a130(_a212, "자동 씨앗 교체", nil)
+_a140(_a274, "crop", function()
 _a54("crop", function() return _a10.CropInterval end, _a29, "씨앗")
 end)
-_a151(_a293, {
-{ label = "주기", value = _a10.CropInterval, onChange = function(_a295)
-local _a296 = tonumber(_a295) if _a296 and _a296 >= 5 then _a10.CropInterval = _a296 end
+_a151(_a273, {
+{ label = "주기", value = _a10.CropInterval, onChange = function(_a275)
+local _a276 = tonumber(_a275) if _a276 and _a276 >= 5 then _a10.CropInterval = _a276 end
 end },
-{ label = "갈아엎기 배수", value = _a10.CropMargin, onChange = function(_a297)
-local _a298 = tonumber(_a297) if _a298 and _a298 >= 1 then _a10.CropMargin = _a298 _a6("[설정] 작물 배수 " .. _a298) end
+{ label = "갈아엎기 배수", value = _a10.CropMargin, onChange = function(_a277)
+local _a278 = tonumber(_a277) if _a278 and _a278 >= 1 then _a10.CropMargin = _a278 _a6("[설정] 작물 배수 " .. _a278) end
 end },
 })
-_a170(_a293, "성장중 건너뛰기",
+_a170(_a273, "성장중 건너뛰기",
 function() return _a10.SkipUnhatched end,
-function(_a299) _a10.SkipUnhatched = _a299 end)
-_a160(_a293, {
+function(_a279) _a10.SkipUnhatched = _a279 end)
+_a160(_a273, {
 { label = "밭 현황 보기", col = _a55.accent, fn = function()
-local _a300, _a301 = _a15()
-if not _a301 then _a6("[씨앗] 밭 없음") _a97("log") return end
-local _a302, _a303 = _a26(_a301), _a25()
+local _a280, _a281 = _a15()
+if not _a281 then _a6("[씨앗] 밭 없음") _a97("log") return end
+local _a282, _a283 = _a26(_a281), _a25()
 _a6("")
 _a6("──── 밭 현황 ────")
 _a6("보유 씨앗 (기대 초당수익 순)")
-for _a304, _a305 in ipairs(_a303) do
+for _a284, _a285 in ipairs(_a283) do
 _a6(("  %-10s %-8s ×%-6s  기대 %s/s"):format(
-tostring(_a305.id), tostring(_a305.vr or "-"), tostring(_a305.am), _a7(_a305.exp)))
+tostring(_a285.id), tostring(_a285.vr or "-"), tostring(_a285.am), _a7(_a285.exp)))
 end
-local _a306, _a307, _a308, _a309, _a310 = 0, 0, 0, 0, 0
-local _a311 = _a303[1]
-local _a312 = _a311 and _a311.exp or 0
+local _a286, _a287, _a288, _a289, _a290 = 0, 0, 0, 0, 0
+local _a291 = _a283[1]
+local _a292 = _a291 and _a291.exp or 0
 _a6("")
 _a6("심어진 작물")
-local _a313 = 0
-for _a314, _a315 in pairs(_a302) do
-_a306 += 1
-local _a316 = _a28(_a315) or 0
-_a307 += _a316
-if _a27(_a315) then _a309 += 1
-elseif _a312 > _a316 * _a10.CropMargin then _a308 += 1
-else _a310 += 1 end
-_a313 += 1
-if _a313 <= 20 then
-_a6(("  칸%-4s %-20s %s/s%s"):format(tostring(_a314),
-tostring(rawget(_a315, "sp") or "?"), _a7(_a316),
-_a27(_a315) and "  (자라는 중)" or ""))
+local _a293 = 0
+for _a294, _a295 in pairs(_a282) do
+_a286 += 1
+local _a296 = _a28(_a295) or 0
+_a287 += _a296
+if _a27(_a295) then _a289 += 1
+elseif _a292 > _a296 * _a10.CropMargin then _a288 += 1
+else _a290 += 1 end
+_a293 += 1
+if _a293 <= 20 then
+_a6(("  칸%-4s %-20s %s/s%s"):format(tostring(_a294),
+tostring(rawget(_a295, "sp") or "?"), _a7(_a296),
+_a27(_a295) and "  (자라는 중)" or ""))
 end
 end
-if _a306 > 20 then _a6("  ... (" .. (_a306 - 20) .. "칸 더)") end
+if _a286 > 20 then _a6("  ... (" .. (_a286 - 20) .. "칸 더)") end
 _a6("")
-_a6(("총 %d칸 / 합계 %s per sec"):format(_a306, _a7(_a307)))
-_a6(("갈아엎기 대상 %d / 유지 %d / 자라는 중 %d"):format(_a308, _a310, _a309))
+_a6(("총 %d칸 / 합계 %s per sec"):format(_a286, _a7(_a287)))
+_a6(("갈아엎기 대상 %d / 유지 %d / 자라는 중 %d"):format(_a288, _a290, _a289))
 _a97("log")
 end },
 { label = "지금 1회 실행", col = _a55.cardHi, fn = function()
@@ -799,50 +742,50 @@ end },
 })
 end
 do
-local _a317, _a318 = _a130(_a213, "자동 확장", nil)
-_a140(_a318, "expand", function()
+local _a297, _a298 = _a130(_a212, "자동 확장", nil)
+_a140(_a298, "expand", function()
 _a54("expand", function() return _a10.ExpandInterval end, _a32, "확장")
 end)
-_a151(_a317, {
-{ label = "주기", value = _a10.ExpandInterval, onChange = function(_a319)
-local _a320 = tonumber(_a319) if _a320 and _a320 >= 5 then _a10.ExpandInterval = _a320 end
+_a151(_a297, {
+{ label = "주기", value = _a10.ExpandInterval, onChange = function(_a299)
+local _a300 = tonumber(_a299) if _a300 and _a300 >= 5 then _a10.ExpandInterval = _a300 end
 end },
-{ label = "밭칸 스캔", value = _a10.MaxBedScan, onChange = function(_a321)
-local _a322 = tonumber(_a321) if _a322 and _a322 >= 1 then _a10.MaxBedScan = math.floor(_a322) end
+{ label = "밭칸 스캔", value = _a10.MaxBedScan, onChange = function(_a301)
+local _a302 = tonumber(_a301) if _a302 and _a302 >= 1 then _a10.MaxBedScan = math.floor(_a302) end
 end },
 })
-_a160(_a317, {
+_a160(_a297, {
 { label = "확장 현황 보기", col = _a55.accent, fn = function()
-local _a323, _a324, _a325, _a326 = _a15()
-if not _a324 then _a6("[확장] 밭 없음") _a97("log") return end
-local _a327 = _a21()
-_a13.sun = _a327
-local _a328 = _a30(true)
+local _a303, _a304, _a305, _a306 = _a15()
+if not _a304 then _a6("[확장] 밭 없음") _a97("log") return end
+local _a307 = _a21()
+_a13.sun = _a307
+local _a308 = _a30(true)
 _a6("")
 _a6("──── 확장 현황 ────")
-_a6("Sunflowers = " .. _a7(_a327, 0))
+_a6("Sunflowers = " .. _a7(_a307, 0))
 _a6("")
-_a6("레인 " .. tostring(_a326) .. "개 열림")
-local _a329 = {}
-for _a330 in pairs(_a328) do _a329[#_a329 + 1] = tonumber(_a330) or _a330 end
-table.sort(_a329, function(_a331, _a332) return tostring(_a331) < tostring(_a332) end)
-for _a333, _a334 in ipairs(_a329) do
-local _a335 = _a328[_a334] or _a328[tostring(_a334)]
-local _a336 = tonumber(_a334) or 0
-local _a337 = (_a336 == (tonumber(_a326) or 0) + 1)
-and ((tonumber(_a335) or math.huge) <= _a327 and "  ← 지금 오픈 가능" or "  ← 다음 (돈 부족)")
-or (_a336 <= (tonumber(_a326) or 0) and "  (열림)" or "")
-_a6(("  레인 %-3s %s%s"):format(tostring(_a334), _a7(tonumber(_a335) or 0, 0), _a337))
+_a6("레인 " .. tostring(_a306) .. "개 열림")
+local _a309 = {}
+for _a310 in pairs(_a308) do _a309[#_a309 + 1] = tonumber(_a310) or _a310 end
+table.sort(_a309, function(_a311, _a312) return tostring(_a311) < tostring(_a312) end)
+for _a313, _a314 in ipairs(_a309) do
+local _a315 = _a308[_a314] or _a308[tostring(_a314)]
+local _a316 = tonumber(_a314) or 0
+local _a317 = (_a316 == (tonumber(_a306) or 0) + 1)
+and ((tonumber(_a315) or math.huge) <= _a307 and "  ← 지금 오픈 가능" or "  ← 다음 (돈 부족)")
+or (_a316 <= (tonumber(_a306) or 0) and "  (열림)" or "")
+_a6(("  레인 %-3s %s%s"):format(tostring(_a314), _a7(tonumber(_a315) or 0, 0), _a317))
 end
-local _a338 = _a31(_a324)
+local _a318 = _a31(_a304)
 _a6("")
-_a6("잠긴 밭칸 " .. #_a338 .. "개 (싼 순 8개)")
-for _a339 = 1, math.min(8, #_a338) do
-local _a340 = _a338[_a339]
-_a6(("  칸 %-4s %s%s"):format(_a340.id, _a340.cost and _a7(_a340.cost, 0) or "?",
-(_a340.cost and _a340.cost <= _a327) and "  ← 오픈 가능" or ""))
+_a6("잠긴 밭칸 " .. #_a318 .. "개 (싼 순 8개)")
+for _a319 = 1, math.min(8, #_a318) do
+local _a320 = _a318[_a319]
+_a6(("  칸 %-4s %s%s"):format(_a320.id, _a320.cost and _a7(_a320.cost, 0) or "?",
+(_a320.cost and _a320.cost <= _a307) and "  ← 오픈 가능" or ""))
 end
-if #_a338 == 0 then _a6("  (전부 열려 있음)") end
+if #_a318 == 0 then _a6("  (전부 열려 있음)") end
 _a97("log")
 end },
 { label = "지금 1회 실행", col = _a55.cardHi, fn = function()
@@ -851,27 +794,27 @@ end },
 })
 end
 do
-local _a341, _a342 = _a130(_a213, "자동 리버스", nil)
-_a140(_a342, "rebirth", function()
+local _a321, _a322 = _a130(_a212, "자동 리버스", nil)
+_a140(_a322, "rebirth", function()
 _a54("rebirth", function() return _a10.RebirthInterval end, _a34, "리버스")
 end)
-_a151(_a341, {
-{ label = "주기", value = _a10.RebirthInterval, onChange = function(_a343)
-local _a344 = tonumber(_a343) if _a344 and _a344 >= 10 then _a10.RebirthInterval = _a344 end
+_a151(_a321, {
+{ label = "주기", value = _a10.RebirthInterval, onChange = function(_a323)
+local _a324 = tonumber(_a323) if _a324 and _a324 >= 10 then _a10.RebirthInterval = _a324 end
 end },
 })
-_a160(_a341, {
+_a160(_a321, {
 { label = "리버스 현황 보기", col = _a55.accent, fn = function()
-local _a345 = _a33()
+local _a325 = _a33()
 _a6("")
 _a6("──── 리버스 현황 ────")
-if not _a345 then _a6("  밭 없음") _a97("log") return end
-_a6(("  현재 리버스   %d회  (최대 %s)"):format(_a345.regrows, tostring(_a345.cap)))
-_a6(("  레인          %d / 7 %s"):format(_a345.lanes, _a345.lanes >= 7 and "OK" or "부족"))
-_a6(("  코인보스      %d / %d %s"):format(_a345.kills, _a345.need,
-_a345.kills >= _a345.need and "OK" or "부족"))
+if not _a325 then _a6("  밭 없음") _a97("log") return end
+_a6(("  현재 리버스   %d회  (최대 %s)"):format(_a325.regrows, tostring(_a325.cap)))
+_a6(("  레인          %d / 7 %s"):format(_a325.lanes, _a325.lanes >= 7 and "OK" or "부족"))
+_a6(("  코인보스      %d / %d %s"):format(_a325.kills, _a325.need,
+_a325.kills >= _a325.need and "OK" or "부족"))
 _a6("")
-_a6(_a345.ready and "  ★ 지금 리버스 가능" or ("  대기 — " .. tostring(_a345.reason)))
+_a6(_a325.ready and "  ★ 지금 리버스 가능" or ("  대기 — " .. tostring(_a325.reason)))
 _a97("log")
 end },
 { label = "지금 1회 리버스", col = _a55.bad, fn = function()
@@ -879,32 +822,32 @@ task.spawn(function() _a12.rebirth = true _a34() _a12.rebirth = false _a97("log"
 end },
 })
 end
-local _a346 = _a114("main", "메인 게임", 30)
+local _a326 = _a114("main", "메인 게임", 30)
 do
-local _a347, _a348 = _a130(_a346, "올 자동", nil)
-local _a349 = _a56("Frame", {
+local _a327, _a328 = _a130(_a326, "올 자동", nil)
+local _a329 = _a56("Frame", {
 Size = UDim2.new(1, 0, 0, 108), BackgroundColor3 = _a55.cardHi,
 BorderSizePixel = 0, LayoutOrder = _a125(),
-}, _a347)
-_a63(_a349, 6)
-_a70(_a349, 8)
-local _a350 = _a56("TextLabel", {
+}, _a327)
+_a63(_a329, 6)
+_a70(_a329, 8)
+local _a330 = _a56("TextLabel", {
 Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1,
 Font = Enum.Font.Code, TextSize = 12, TextColor3 = _a55.text,
 TextXAlignment = Enum.TextXAlignment.Left,
 TextYAlignment = Enum.TextYAlignment.Top,
 Text = "정지", RichText = true,
-}, _a349)
+}, _a329)
 task.spawn(function()
 while _a73 and _a73.Parent do
-local _a351 = _a42.ctl.now
-local _a352 = _a12.auto and "🟢" or "⚪"
-local _a353 = _a351.act or "-"
-if _a351.detail and _a351.detail ~= "" then _a353 = _a353 .. "  " .. _a351.detail end
-_a350.Text = table.concat({
-_a352 .. " " .. (_a12.auto and (_a351.step or "-") or "정지"),
-"▸ " .. _a353,
-"목표 " .. (_a351.goal or "-") .. (_a351.prog ~= "" and ("   " .. _a351.prog) or ""),
+local _a331 = _a42.ctl.now
+local _a332 = _a12.auto and "🟢" or "⚪"
+local _a333 = _a331.act or "-"
+if _a331.detail and _a331.detail ~= "" then _a333 = _a333 .. "  " .. _a331.detail end
+_a330.Text = table.concat({
+_a332 .. " " .. (_a12.auto and (_a331.step or "-") or "정지"),
+"▸ " .. _a333,
+"목표 " .. (_a331.goal or "-") .. (_a331.prog ~= "" and ("   " .. _a331.prog) or ""),
 "1.리버스 " .. (_a42.auto.rebNote or "-"),
 "2.존해금 " .. (_a42.auto.zoneNote or "-"),
 "파밍대상 " .. tostring(_a42.auto.farmZone or "-") .. "   현재 " .. tostring(_a42.auto.hereZone or "-"),
@@ -913,117 +856,117 @@ task.wait(0.2)
 end
 end)
 function _a42.auto.start()
-for _a354, _a355 in ipairs(_a42.auto.STEPS) do _a12[_a355.run] = false end
-for _a356, _a357 in ipairs(_a42.auto.SIDE) do _a12[_a357.run] = false end
+for _a334, _a335 in ipairs(_a42.auto.STEPS) do _a12[_a335.run] = false end
+for _a336, _a337 in ipairs(_a42.auto.SIDE) do _a12[_a337.run] = false end
 _a12.petspd = true
 _a12.rewatch = true
 _a137()
 _a54("auto", function() return _a10.AutoInterval end, _a42.auto.master, "자동")
 end
-_a140(_a348, "auto", _a42.auto.start)
-_a151(_a347, {
-{ label = "주기", value = _a10.AutoInterval, onChange = function(_a358)
-local _a359 = tonumber(_a358) if _a359 and _a359 >= 1 then _a10.AutoInterval = _a359 end
+_a140(_a328, "auto", _a42.auto.start)
+_a151(_a327, {
+{ label = "주기", value = _a10.AutoInterval, onChange = function(_a338)
+local _a339 = tonumber(_a338) if _a339 and _a339 >= 1 then _a10.AutoInterval = _a339 end
 end },
-{ label = "정체 판정(초)", value = _a10.PursueStallSec, onChange = function(_a360)
-local _a361 = tonumber(_a360) if _a361 and _a361 >= 10 then _a10.PursueStallSec = _a361 end
-end },
-})
-_a151(_a347, {
-{ label = "운 퀘 최소 알 개수", value = _a10.HatchMinAfford, onChange = function(_a362)
-local _a363 = tonumber(_a362) if _a363 and _a363 >= 1 then _a10.HatchMinAfford = math.floor(_a363) end
-end },
-{ label = "더 버는 시간(초)", value = _a10.MoneyDwell, onChange = function(_a364)
-local _a365 = tonumber(_a364) if _a365 and _a365 >= 0 then _a10.MoneyDwell = _a365 end
+{ label = "정체 판정(초)", value = _a10.PursueStallSec, onChange = function(_a340)
+local _a341 = tonumber(_a340) if _a341 and _a341 >= 10 then _a10.PursueStallSec = _a341 end
 end },
 })
-_a151(_a347, {
-{ label = "부화 한 번에(초)", value = _a10.HatchBudget, onChange = function(_a366)
-local _a367 = tonumber(_a366) if _a367 and _a367 >= 3 then _a10.HatchBudget = _a367 end
+_a151(_a327, {
+{ label = "운 퀘 최소 알 개수", value = _a10.HatchMinAfford, onChange = function(_a342)
+local _a343 = tonumber(_a342) if _a343 and _a343 >= 1 then _a10.HatchMinAfford = math.floor(_a343) end
+end },
+{ label = "더 버는 시간(초)", value = _a10.MoneyDwell, onChange = function(_a344)
+local _a345 = tonumber(_a344) if _a345 and _a345 >= 0 then _a10.MoneyDwell = _a345 end
 end },
 })
-_a151(_a347, {
-{ label = "이동 방식", value = _a10.TpMode, onChange = function(_a368)
-_a368 = tostring(_a368 or ""):lower()
-if _a368 == "instant" or _a368 == "glide" or _a368 == "walk" then _a10.TpMode = _a368 end
-end },
-{ label = "glide 속도", value = _a10.TpSpeed, onChange = function(_a369)
-local _a370 = tonumber(_a369) if _a370 and _a370 >= 16 then _a10.TpSpeed = _a370 end
+_a151(_a327, {
+{ label = "부화 한 번에(초)", value = _a10.HatchBudget, onChange = function(_a346)
+local _a347 = tonumber(_a346) if _a347 and _a347 >= 3 then _a10.HatchBudget = _a347 end
 end },
 })
-_a170(_a347, "차단 화면에 실제 클릭까지 시도",
+_a151(_a327, {
+{ label = "이동 방식", value = _a10.TpMode, onChange = function(_a348)
+_a348 = tostring(_a348 or ""):lower()
+if _a348 == "instant" or _a348 == "glide" or _a348 == "walk" then _a10.TpMode = _a348 end
+end },
+{ label = "glide 속도", value = _a10.TpSpeed, onChange = function(_a349)
+local _a350 = tonumber(_a349) if _a350 and _a350 >= 16 then _a10.TpSpeed = _a350 end
+end },
+})
+_a170(_a327, "차단 화면에 실제 클릭까지 시도",
 function() return _a10.ScreenRealClick end,
-function(_a371) _a10.ScreenRealClick = _a371 end)
-_a170(_a347, "퀘스트 없을 때도 알 까기",
+function(_a351) _a10.ScreenRealClick = _a351 end)
+_a170(_a327, "퀘스트 없을 때도 알 까기",
 function() return _a10.IdleHatch end,
-function(_a372) _a10.IdleHatch = _a372 end)
-_a170(_a347, "존 해금·리버스는 퀘스트 끝나고",
+function(_a352) _a10.IdleHatch = _a352 end)
+_a170(_a327, "존 해금·리버스는 퀘스트 끝나고",
 function() return _a10.HoldZoneForQuest end,
-function(_a373) _a10.HoldZoneForQuest = _a373 end)
-for _a374, _a375 in ipairs(_a42.auto.STEPS) do
-local _a376 = _a375.key
-_a170(_a347, "  " .. _a374 .. ". " .. _a375.label,
-function() return _a10.StepOn[_a376] end,
-function(_a377) _a10.StepOn[_a376] = _a377 end)
+function(_a353) _a10.HoldZoneForQuest = _a353 end)
+for _a354, _a355 in ipairs(_a42.auto.STEPS) do
+local _a356 = _a355.key
+_a170(_a327, "  " .. _a354 .. ". " .. _a355.label,
+function() return _a10.StepOn[_a356] end,
+function(_a357) _a10.StepOn[_a356] = _a357 end)
 end
-for _a378, _a379 in ipairs(_a42.auto.SIDE) do
-local _a380 = _a379.key
-_a170(_a347, "  · " .. _a379.label .. " (순위 밖)",
-function() return _a10.StepOn[_a380] end,
-function(_a381) _a10.StepOn[_a380] = _a381 end)
+for _a358, _a359 in ipairs(_a42.auto.SIDE) do
+local _a360 = _a359.key
+_a170(_a327, "  · " .. _a359.label .. " (순위 밖)",
+function() return _a10.StepOn[_a360] end,
+function(_a361) _a10.StepOn[_a360] = _a361 end)
 end
-_a160(_a347, {
+_a160(_a327, {
 { label = "지금 상태", col = _a55.accent, fn = function()
 _a6("")
 _a6("──── 올 자동 ────")
 _a6("  " .. (_a12.auto and "돌아가는 중" or "정지") ..
 (_a42.auto.step and ("   지금: " .. _a42.auto.step) or ""))
-local _a382, _a383 = _a42.quest.bestDepActive()
+local _a362, _a363 = _a42.quest.bestDepActive()
 _a6("  현재 존 " .. tostring(_a42.move.curZone()) .. " / 최고 존 " .. tostring(_a42.move.bestZone()))
-if _a382 then
-_a6("  ⏸ 존해금·리버스 보류 중 — " .. tostring(_a383 and _a383.title))
+if _a362 then
+_a6("  ⏸ 존해금·리버스 보류 중 — " .. tostring(_a363 and _a363.title))
 else
 _a6("  존해금·리버스 진행 가능")
 end
 _a6("")
 _a6("  먼저 (순위 밖):")
-for _a384, _a385 in ipairs(_a42.auto.SIDE) do
-_a6(("      %-16s %s"):format(_a385.label, _a10.StepOn[_a385.key] and "ON" or "off"))
+for _a364, _a365 in ipairs(_a42.auto.SIDE) do
+_a6(("      %-16s %s"):format(_a365.label, _a10.StepOn[_a365.key] and "ON" or "off"))
 end
 _a6("  우선순위:")
-for _a386, _a387 in ipairs(_a42.auto.STEPS) do
-_a6(("    %d. %-16s %s%s"):format(_a386, _a387.label,
-_a10.StepOn[_a387.key] and "ON" or "off",
-_a387.hold and "   (퀘스트 붙잡는 중엔 보류)" or ""))
+for _a366, _a367 in ipairs(_a42.auto.STEPS) do
+_a6(("    %d. %-16s %s%s"):format(_a366, _a367.label,
+_a10.StepOn[_a367.key] and "ON" or "off",
+_a367.hold and "   (퀘스트 붙잡는 중엔 보류)" or ""))
 end
 _a6("")
 _a6("  세이브")
-local _a388 = _a8.Save
-_a6("    Library.Client.Save : " .. (_a388 and "로드됨" or "★ 없음"))
-if _a388 then
-local _a389, _a390 = pcall(_a388.Get)
-_a6("    Get()        : " .. (_a389 and type(_a390) or ("에러 " .. tostring(_a390))))
-local _a391, _a392 = pcall(_a388.Get, _a4)
-_a6("    Get(LP)      : " .. (_a391 and type(_a392) or ("에러 " .. tostring(_a392))))
-if rawget(_a388, "GetSaves") then
-local _a393, _a394 = pcall(_a388.GetSaves)
-if _a393 and type(_a394) == "table" then
-local _a395 = 0
-for _a396 in pairs(_a394) do
-_a395 += 1
-if _a395 <= 3 then _a6("      키: " .. tostring(_a396)
-.. (_a396 == _a4 and "   ← 내 LocalPlayer" or "")) end
+local _a368 = _a8.Save
+_a6("    Library.Client.Save : " .. (_a368 and "로드됨" or "★ 없음"))
+if _a368 then
+local _a369, _a370 = pcall(_a368.Get)
+_a6("    Get()        : " .. (_a369 and type(_a370) or ("에러 " .. tostring(_a370))))
+local _a371, _a372 = pcall(_a368.Get, _a4)
+_a6("    Get(LP)      : " .. (_a371 and type(_a372) or ("에러 " .. tostring(_a372))))
+if rawget(_a368, "GetSaves") then
+local _a373, _a374 = pcall(_a368.GetSaves)
+if _a373 and type(_a374) == "table" then
+local _a375 = 0
+for _a376 in pairs(_a374) do
+_a375 += 1
+if _a375 <= 3 then _a6("      키: " .. tostring(_a376)
+.. (_a376 == _a4 and "   ← 내 LocalPlayer" or "")) end
 end
-_a6("    GetSaves()   : " .. _a395 .. "개")
+_a6("    GetSaves()   : " .. _a375 .. "개")
 else
-_a6("    GetSaves()   : 에러 " .. tostring(_a394))
+_a6("    GetSaves()   : 에러 " .. tostring(_a374))
 end
 end
-local _a397 = _a43()
-if _a397 then
-local _a398 = rawget(_a397, "Goals")
-_a6("    → 읽기 성공. Rebirths " .. tostring(rawget(_a397, "Rebirths"))
-.. " / Goals " .. (type(_a398) == "table" and #_a398 or "없음"))
+local _a377 = _a43()
+if _a377 then
+local _a378 = rawget(_a377, "Goals")
+_a6("    → 읽기 성공. Rebirths " .. tostring(rawget(_a377, "Rebirths"))
+.. " / Goals " .. (type(_a378) == "table" and #_a378 or "없음"))
 else
 _a6("    → ★ 어떤 방법으로도 못 읽음")
 end
@@ -1035,87 +978,87 @@ _a6(("    %.0f초 전"):format(os.clock() - _a42.auto.lastPassAt))
 else
 _a6("    아직 한 바퀴도 안 돎 — 루프가 안 돌고 있습니다")
 end
-for _a399, _a400 in ipairs(_a42.auto.lastTrace or {}) do _a6("    " .. _a400) end
+for _a379, _a380 in ipairs(_a42.auto.lastTrace or {}) do _a6("    " .. _a380) end
 _a97("log")
 end },
 { label = "화면 넘기기 진단", col = _a55.warn, fn = function()
 task.spawn(function()
 _a6("")
 _a6("──── 보상 화면 ────")
-local _a401 = _a41.Vars
-_a6("  Library.Variables : " .. (_a401 and "로드됨" or "없음"))
-if _a401 then
-_a6("    IsRebirthing = " .. tostring(rawget(_a401, "IsRebirthing")))
-_a6("    IsRankingUp  = " .. tostring(rawget(_a401, "IsRankingUp")))
-_a6("    OpeningEgg   = " .. tostring(rawget(_a401, "OpeningEgg")))
+local _a381 = _a41.Vars
+_a6("  Library.Variables : " .. (_a381 and "로드됨" or "없음"))
+if _a381 then
+_a6("    IsRebirthing = " .. tostring(rawget(_a381, "IsRebirthing")))
+_a6("    IsRankingUp  = " .. tostring(rawget(_a381, "IsRankingUp")))
+_a6("    OpeningEgg   = " .. tostring(rawget(_a381, "OpeningEgg")))
 end
 _a6("  debug.info     : " .. tostring(type(debug) == "table" and type(debug.info) == "function"))
 _a6("  getgc          : " .. tostring(type(getgc) == "function"))
 _a6("  debug.setupvalue: " .. tostring(type(debug) == "table" and type(debug.setupvalue) == "function"))
-local _a402 = _a4:FindFirstChildOfClass("PlayerGui")
-if _a402 then
+local _a382 = _a4:FindFirstChildOfClass("PlayerGui")
+if _a382 then
 _a6("  떠 있는 차단 화면:")
-local _a403 = false
-for _a404, _a405 in ipairs(_a42.screen.BLOCKERS) do
-local _a406 = _a402:FindFirstChild(_a405[1])
-_a6(("    %-14s %s"):format(_a405[1],
-_a406 and (_a406.Enabled and "★ 켜짐" or "꺼짐") or "없음"))
-if _a406 and _a406.Enabled then _a403 = true end
+local _a383 = false
+for _a384, _a385 in ipairs(_a42.screen.BLOCKERS) do
+local _a386 = _a382:FindFirstChild(_a385[1])
+_a6(("    %-14s %s"):format(_a385[1],
+_a386 and (_a386.Enabled and "★ 켜짐" or "꺼짐") or "없음"))
+if _a386 and _a386.Enabled then _a383 = true end
 end
-if not _a403 then _a6("    (없음)") end
+if not _a383 then _a6("    (없음)") end
 end
 if type(getgc) == "function" and type(debug) == "table" and debug.info then
 _a6("")
 _a6("  Rebirth/RankUp 스크립트의 클로저 시그니처:")
-local _a407, _a408 = {}, 0
-for _a409, _a410 in ipairs({ true, false }) do
-local _a411, _a412 = pcall(getgc, _a410)
-if _a411 then
-for _a413, _a414 in ipairs(_a412) do
-if type(_a414) == "function" and _a408 < 25 then
-local _a415, _a416 = pcall(debug.info, _a414, "s")
-if _a415 and type(_a416) == "string"
-and (_a416:find("Rebirth", 1, true) or _a416:find("Rank Up", 1, true)) then
-local _a417, _a418 = pcall(debug.info, _a414, "a")
-if _a417 then
-local _a419 = {}
-for _a420 = 1, 16 do
-local _a421, _a422 = pcall(debug.getupvalue, _a414, _a420)
-if not _a421 then break end
-_a419[_a420] = type(_a422)
+local _a387, _a388 = {}, 0
+for _a389, _a390 in ipairs({ true, false }) do
+local _a391, _a392 = pcall(getgc, _a390)
+if _a391 then
+for _a393, _a394 in ipairs(_a392) do
+if type(_a394) == "function" and _a388 < 25 then
+local _a395, _a396 = pcall(debug.info, _a394, "s")
+if _a395 and type(_a396) == "string"
+and (_a396:find("Rebirth", 1, true) or _a396:find("Rank Up", 1, true)) then
+local _a397, _a398 = pcall(debug.info, _a394, "a")
+if _a397 then
+local _a399 = {}
+for _a400 = 1, 16 do
+local _a401, _a402 = pcall(debug.getupvalue, _a394, _a400)
+if not _a401 then break end
+_a399[_a400] = type(_a402)
 end
-local _a423 = ("인자%d | %s"):format(_a418 or -1,
-#_a419 > 0 and table.concat(_a419, ",") or "(없음)")
-if not _a407[_a423] then
-_a407[_a423] = true
-_a408 += 1
-_a6("    " .. _a423)
-end
-end
+local _a403 = ("인자%d | %s"):format(_a398 or -1,
+#_a399 > 0 and table.concat(_a399, ",") or "(없음)")
+if not _a387[_a403] then
+_a387[_a403] = true
+_a388 += 1
+_a6("    " .. _a403)
 end
 end
 end
 end
 end
-if _a408 == 0 then _a6("    (하나도 못 찾음)") end
 end
-for _a424, _a425 in ipairs({ "reward", "egg", "mastery", "card" }) do
+end
+if _a388 == 0 then _a6("    (하나도 못 찾음)") end
+end
+for _a404, _a405 in ipairs({ "reward", "egg", "mastery", "card" }) do
 _a42.screen._sig = nil
-local _a426 = _a42.screen.findSignalFns(_a425)
+local _a406 = _a42.screen.findSignalFns(_a405)
 _a6("")
-_a6(("  [%s] 찾은 함수 %d개"):format(_a425, #_a426))
-for _a427, _a428 in ipairs(_a426) do
-_a6(("    %s%s"):format(_a428.exact and "★정확일치 " or "", tostring(_a428.src)))
-_a6(("       upvalue %d개 : %s"):format(_a428.n or 0, tostring(_a428.sig)))
+_a6(("  [%s] 찾은 함수 %d개"):format(_a405, #_a406))
+for _a407, _a408 in ipairs(_a406) do
+_a6(("    %s%s"):format(_a408.exact and "★정확일치 " or "", tostring(_a408.src)))
+_a6(("       upvalue %d개 : %s"):format(_a408.n or 0, tostring(_a408.sig)))
 end
-if #_a426 == 0 then
+if #_a406 == 0 then
 _a6("    (getgc 로 그 스크립트의 클로저를 못 찾음)")
 end
-local _a429, _a430 = _a42.screen.signal(_a425)
-_a6(("    upvalue 신호 : %s (%s개 세팅)"):format(tostring(_a429), tostring(_a430)))
-local _a431 = _a42.screen.SIGNAL[_a425]
+local _a409, _a410 = _a42.screen.signal(_a405)
+_a6(("    upvalue 신호 : %s (%s개 세팅)"):format(tostring(_a409), tostring(_a410)))
+local _a411 = _a42.screen.SIGNAL[_a405]
 _a6(("    게임내 입력발동 : %s"):format(
-tostring(_a42.screen.pressInGame(_a431 and _a431.pats or {}))))
+tostring(_a42.screen.pressInGame(_a411 and _a411.pats or {}))))
 end
 _a6("")
 _a6("  감시 루프 RUN.rewatch = " .. tostring(_a12.rewatch))
@@ -1132,52 +1075,52 @@ task.spawn(function()
 _a6("")
 _a6("════ 올 자동 점검 ════")
 _a6("  RUN.auto = " .. tostring(_a12.auto))
-local _a432 = {}
-for _a433, _a434 in ipairs(_a42.auto.SIDE) do
-_a432[#_a432 + 1] = _a434.key .. "=" .. tostring(_a10.StepOn[_a434.key])
+local _a412 = {}
+for _a413, _a414 in ipairs(_a42.auto.SIDE) do
+_a412[#_a412 + 1] = _a414.key .. "=" .. tostring(_a10.StepOn[_a414.key])
 end
-for _a435, _a436 in ipairs(_a42.auto.STEPS) do
-_a432[#_a432 + 1] = _a436.key .. "=" .. tostring(_a10.StepOn[_a436.key])
+for _a415, _a416 in ipairs(_a42.auto.STEPS) do
+_a412[#_a412 + 1] = _a416.key .. "=" .. tostring(_a10.StepOn[_a416.key])
 end
-_a6("  단계 ON/OFF : " .. table.concat(_a432, "  "))
+_a6("  단계 ON/OFF : " .. table.concat(_a412, "  "))
 _a6("  lockGoal    : " .. (_a42.ctl.lockGoal and tostring(_a42.ctl.lockGoal.q.title) or "없음"))
-local _a437, _a438 = _a42.quest.bestDepActive()
-_a6("  보류중?     : " .. tostring(_a437) .. (_a438 and ("  ← " .. tostring(_a438.title)) or ""))
+local _a417, _a418 = _a42.quest.bestDepActive()
+_a6("  보류중?     : " .. tostring(_a417) .. (_a418 and ("  ← " .. tostring(_a418.title)) or ""))
 _a6("  리모트      : 존 " .. (_a41.R_Zone and "O" or "X")
 .. " / 리버스 " .. (_a41.R_Reb and "O" or "X"))
 _a6("")
 _a6("  ── 존 해금 판정 ──")
-local _a439 = _a46()
-if not _a439 then
+local _a419 = _a46()
+if not _a419 then
 _a6("    zoneStatus() = nil  ← 다음 존을 못 구함")
-local _a440 = _a41.Zone and rawget(_a41.Zone, "GetNextZone")
-if _a440 then
-local _a441, _a442, _a443 = pcall(_a41.Zone.GetNextZone)
-_a6("    GetNextZone → ok=" .. tostring(_a441)
-.. " / " .. tostring(_a442) .. " / " .. tostring(_a443))
+local _a420 = _a41.Zone and rawget(_a41.Zone, "GetNextZone")
+if _a420 then
+local _a421, _a422, _a423 = pcall(_a41.Zone.GetNextZone)
+_a6("    GetNextZone → ok=" .. tostring(_a421)
+.. " / " .. tostring(_a422) .. " / " .. tostring(_a423))
 end
 if _a41.Zone and rawget(_a41.Zone, "HasCompletedNextZoneQuests") then
-local _a444, _a445 = pcall(_a41.Zone.HasCompletedNextZoneQuests)
-_a6("    존 퀘스트 완료? " .. (_a444 and tostring(_a445) or ("에러 " .. tostring(_a445))))
+local _a424, _a425 = pcall(_a41.Zone.HasCompletedNextZoneQuests)
+_a6("    존 퀘스트 완료? " .. (_a424 and tostring(_a425) or ("에러 " .. tostring(_a425))))
 end
 else
-_a6("    다음 존 : " .. tostring(_a439.id))
+_a6("    다음 존 : " .. tostring(_a419.id))
 _a6(("    가격 %s %s / 보유 %s → %s"):format(
-_a7(_a439.price or 0, 0), tostring(_a439.currency), _a7(_a439.have, 0),
-_a439.ok and "지금 살 수 있음" or "부족"))
+_a7(_a419.price or 0, 0), tostring(_a419.currency), _a7(_a419.have, 0),
+_a419.ok and "지금 살 수 있음" or "부족"))
 end
 _a6("")
 _a6("  ── 리버스 판정 ──")
-local _a446 = _a51()
-if not _a446 then _a6("    세이브 못 읽음")
+local _a426 = _a51()
+if not _a426 then _a6("    세이브 못 읽음")
 else
-_a6(("    현재 %d → 다음 %d"):format(_a446.current, _a446.nextN))
+_a6(("    현재 %d → 다음 %d"):format(_a426.current, _a426.nextN))
 _a6("    최근 사유 : " .. tostring(_a42.auto.rebNote or "-"))
 end
 _a6("")
 _a6("  ── 직전 바퀴 기록 ──")
 if _a42.auto.lastTrace and #_a42.auto.lastTrace > 0 then
-for _a447, _a448 in ipairs(_a42.auto.lastTrace) do _a6("    " .. _a448) end
+for _a427, _a428 in ipairs(_a42.auto.lastTrace) do _a6("    " .. _a428) end
 _a6(("    (%.0f초 전)"):format(os.clock() - (_a42.auto.lastPassAt or os.clock())))
 else
 _a6("    아직 한 바퀴도 안 돌았음")
@@ -1186,28 +1129,28 @@ _a97("log")
 end)
 end },
 })
-local _a449, _a450 = _a130(_a346, "펫 이동속도", nil)
-_a140(_a450, "petspd", function()
+local _a429, _a430 = _a130(_a326, "펫 이동속도", nil)
+_a140(_a430, "petspd", function()
 _a54("petspd", function() return 0.4 end, _a42.item.applyPetSpeed, "펫속도")
 end)
-_a151(_a449, {
-{ label = "배수", value = _a10.PetSpeedMult, onChange = function(_a451)
-local _a452 = tonumber(_a451) if _a452 and _a452 >= 1 then _a10.PetSpeedMult = _a452 end
+_a151(_a429, {
+{ label = "배수", value = _a10.PetSpeedMult, onChange = function(_a431)
+local _a432 = tonumber(_a431) if _a432 and _a432 >= 1 then _a10.PetSpeedMult = _a432 end
 end },
-{ label = "기본 계수 (원래 0.45)", value = _a10.PetSpeedBase, onChange = function(_a453)
-local _a454 = tonumber(_a453) if _a454 and _a454 > 0 then _a10.PetSpeedBase = _a454 end
+{ label = "기본 계수 (원래 0.45)", value = _a10.PetSpeedBase, onChange = function(_a433)
+local _a434 = tonumber(_a433) if _a434 and _a434 > 0 then _a10.PetSpeedBase = _a434 end
 end },
 })
-_a160(_a449, {
+_a160(_a429, {
 { label = "지금 적용 / 확인", col = _a55.accent, fn = function()
-local _a455, _a456 = _a42.item.applyPetSpeed()
+local _a435, _a436 = _a42.item.applyPetSpeed()
 _a6("")
 _a6("──── 펫 이동속도 ────")
 _a6("  PlayerPet 모듈 : " .. (_a41.PlayerPet and "로드됨" or "없음"))
 _a6(("  적용된 펫 %d마리  (배수 %s / 계수 %s)"):format(
-_a455, tostring(_a10.PetSpeedMult), tostring(_a10.PetSpeedBase)))
-if _a456 then _a6("  " .. tostring(_a456)) end
-if _a455 == 0 then _a6("  펫을 장착하고 다시 눌러보세요") end
+_a435, tostring(_a10.PetSpeedMult), tostring(_a10.PetSpeedBase)))
+if _a436 then _a6("  " .. tostring(_a436)) end
+if _a435 == 0 then _a6("  펫을 장착하고 다시 눌러보세요") end
 _a97("log")
 end },
 })
@@ -1216,47 +1159,47 @@ _a54("rewatch", function() return 1 end, function()
 _a42.screen.watchTick = (_a42.screen.watchTick or 0) + 1
 _a42.egg.watchStuck()
 if _a42.screen.dismissBusy then return end
-local _a457, _a458 = _a42.screen.rewardScreenUp()
-if _a457 and _a42.screen.screenGaveUp and (os.clock() - _a42.screen.screenGaveUp) < 30 then
+local _a437, _a438 = _a42.screen.rewardScreenUp()
+if _a437 and _a42.screen.screenGaveUp and (os.clock() - _a42.screen.screenGaveUp) < 30 then
 return
 end
-if _a457 then
-if _a42.screen.lastBlocker ~= _a458 then
-_a42.screen.lastBlocker = _a458
-_a6("[화면] " .. tostring(_a458) .. " 화면 감지 — 넘기는 중")
+if _a437 then
+if _a42.screen.lastBlocker ~= _a438 then
+_a42.screen.lastBlocker = _a438
+_a6("[화면] " .. tostring(_a438) .. " 화면 감지 — 넘기는 중")
 end
 _a42.screen.dismissRewardScreens(20)
 end
 end, "보상화면")
-local _a459, _a460 = _a130(_a346, "자동 파밍 유지", nil)
-_a140(_a460, "farm", function()
+local _a439, _a440 = _a130(_a326, "자동 파밍 유지", nil)
+_a140(_a440, "farm", function()
 _a54("farm", function() return _a10.FarmInterval end, _a45, "파밍")
 end)
-_a151(_a459, {
-{ label = "주기", value = _a10.FarmInterval, onChange = function(_a461)
-local _a462 = tonumber(_a461) if _a462 and _a462 >= 3 then _a10.FarmInterval = _a462 end
+_a151(_a439, {
+{ label = "주기", value = _a10.FarmInterval, onChange = function(_a441)
+local _a442 = tonumber(_a441) if _a442 and _a442 >= 3 then _a10.FarmInterval = _a442 end
 end },
 })
-local _a463, _a464 = _a130(_a346, "자동 존 해금", nil)
-_a140(_a464, "zone", function()
+local _a443, _a444 = _a130(_a326, "자동 존 해금", nil)
+_a140(_a444, "zone", function()
 _a54("zone", function() return _a10.ZoneInterval end, _a47, "존")
 end)
-_a151(_a463, {
-{ label = "주기", value = _a10.ZoneInterval, onChange = function(_a465)
-local _a466 = tonumber(_a465) if _a466 and _a466 >= 3 then _a10.ZoneInterval = _a466 end
+_a151(_a443, {
+{ label = "주기", value = _a10.ZoneInterval, onChange = function(_a445)
+local _a446 = tonumber(_a445) if _a446 and _a446 >= 3 then _a10.ZoneInterval = _a446 end
 end },
 })
-_a160(_a463, {
+_a160(_a443, {
 { label = "다음 존 보기", col = _a55.accent, fn = function()
-local _a467 = _a46()
+local _a447 = _a46()
 _a6("")
-if not _a467 then _a6("[존] 다음 존 없음 (최대 도달?)")
+if not _a447 then _a6("[존] 다음 존 없음 (최대 도달?)")
 else
 _a6("──── 다음 존 ────")
-_a6("  " .. tostring(_a467.id))
-_a6("  가격 " .. _a7(_a467.price or 0, 0) .. " " .. tostring(_a467.currency))
-_a6("  보유 " .. _a7(_a467.have, 0))
-_a6("  " .. (_a467.ok and "지금 해금 가능" or "부족"))
+_a6("  " .. tostring(_a447.id))
+_a6("  가격 " .. _a7(_a447.price or 0, 0) .. " " .. tostring(_a447.currency))
+_a6("  보유 " .. _a7(_a447.have, 0))
+_a6("  " .. (_a447.ok and "지금 해금 가능" or "부족"))
 end
 _a97("log")
 end },
@@ -1264,54 +1207,54 @@ end },
 task.spawn(function() _a12.zone = true _a47() _a12.zone = false _a97("log") end)
 end },
 })
-local _a468, _a469 = _a130(_a346, "자동 부화", nil)
-_a140(_a469, "mhatch", function()
+local _a448, _a449 = _a130(_a326, "자동 부화", nil)
+_a140(_a449, "mhatch", function()
 _a54("mhatch", function() return _a10.MainHatchInterval end, _a50, "부화")
 end)
-_a151(_a468, {
-{ label = "주기", value = _a10.MainHatchInterval, onChange = function(_a470)
-local _a471 = tonumber(_a470) if _a471 and _a471 >= 1 then _a10.MainHatchInterval = _a471 end
+_a151(_a448, {
+{ label = "주기", value = _a10.MainHatchInterval, onChange = function(_a450)
+local _a451 = tonumber(_a450) if _a451 and _a451 >= 1 then _a10.MainHatchInterval = _a451 end
 end },
-{ label = "한 번에 최대", value = _a10.MainHatchMax, onChange = function(_a472)
-local _a473 = tonumber(_a472) if _a473 and _a473 >= 1 then _a10.MainHatchMax = math.floor(_a473) end
-end },
-})
-_a151(_a468, {
-{ label = "예비금", value = _a10.MainHatchReserve, onChange = function(_a474)
-local _a475 = tonumber(_a474) if _a475 and _a475 >= 0 then _a10.MainHatchReserve = _a475 end
-end },
-{ label = "알 ID (비우면 자동)", value = _a10.MainEggId, onChange = function(_a476)
-_a10.MainEggId = _a476 or ""
+{ label = "한 번에 최대", value = _a10.MainHatchMax, onChange = function(_a452)
+local _a453 = tonumber(_a452) if _a453 and _a453 >= 1 then _a10.MainHatchMax = math.floor(_a453) end
 end },
 })
-_a151(_a468, {
-{ label = "알 인식 거리", value = _a10.EggRange, onChange = function(_a477)
-local _a478 = tonumber(_a477) if _a478 and _a478 >= 5 then _a10.EggRange = _a478 end
+_a151(_a448, {
+{ label = "예비금", value = _a10.MainHatchReserve, onChange = function(_a454)
+local _a455 = tonumber(_a454) if _a455 and _a455 >= 0 then _a10.MainHatchReserve = _a455 end
+end },
+{ label = "알 ID (비우면 자동)", value = _a10.MainEggId, onChange = function(_a456)
+_a10.MainEggId = _a456 or ""
 end },
 })
-_a170(_a468, "새 맵 열리면 잠긴 알 자동 해금",
+_a151(_a448, {
+{ label = "알 인식 거리", value = _a10.EggRange, onChange = function(_a457)
+local _a458 = tonumber(_a457) if _a458 and _a458 >= 5 then _a10.EggRange = _a458 end
+end },
+})
+_a170(_a448, "새 맵 열리면 잠긴 알 자동 해금",
 function() return _a10.AutoUnlockEgg end,
-function(_a479) _a10.AutoUnlockEgg = _a479 end)
-_a170(_a468, "게임 내장 오토해치 사용 (기본 끔)",
+function(_a459) _a10.AutoUnlockEgg = _a459 end)
+_a170(_a448, "게임 내장 오토해치 사용 (기본 끔)",
 function() return _a10.UseAutoHatch end,
-function(_a480) _a10.UseAutoHatch = _a480 if not _a480 then _a42.egg.autoHatchOff() end end)
-_a170(_a468, "까는 화면 자동으로 넘기기 (신호)",
+function(_a460) _a10.UseAutoHatch = _a460 if not _a460 then _a42.egg.autoHatchOff() end end)
+_a170(_a448, "까는 화면 자동으로 넘기기 (신호)",
 function() return _a10.HatchClick end,
-function(_a481) _a10.HatchClick = _a481 end)
-_a160(_a468, {
+function(_a461) _a10.HatchClick = _a461 end)
+_a160(_a448, {
 { label = "잠긴 알 보기", col = _a55.accent, fn = function()
-local _a482, _a483, _a484 = _a42.egg.lockedEggs()
+local _a462, _a463, _a464 = _a42.egg.lockedEggs()
 _a6("")
 _a6("──── 알 해금 현황 ────")
-_a6(("  해금 가능 최대 : #%d   /   현재 해금한 최대 : #%d"):format(_a483, _a484))
+_a6(("  해금 가능 최대 : #%d   /   현재 해금한 최대 : #%d"):format(_a463, _a464))
 _a6("  해금 리모트 : " .. (_a41.R_EggUn and "있음" or "없음"))
-if #_a482 == 0 then
+if #_a462 == 0 then
 _a6("  풀 수 있는 알이 없음 (다 풀었거나 존을 더 사야 함)")
 else
-_a6("  아직 안 푼 알 " .. #_a482 .. "개:")
-for _a485, _a486 in ipairs(_a482) do
-_a6(("    #%-3d %s"):format(_a486.num, _a486.id))
-if _a485 >= 20 then _a6("    ...") break end
+_a6("  아직 안 푼 알 " .. #_a462 .. "개:")
+for _a465, _a466 in ipairs(_a462) do
+_a6(("    #%-3d %s"):format(_a466.num, _a466.id))
+if _a465 >= 20 then _a6("    ...") break end
 end
 end
 _a97("log")
@@ -1320,228 +1263,228 @@ end },
 task.spawn(function()
 _a6("")
 _a6("──── 부화 진단 ────")
-local _a487, _a488, _a489, _a490 = _a48()
-_a6("  대상 알   : " .. tostring(_a487))
-if not _a487 then _a6("  (오픈한 알이 없음)") _a97("log") return end
-local _a491 = _a488 and tonumber(rawget(_a488, "eggNumber"))
-_a6("  알 번호   : " .. tostring(_a491) .. "   오픈함? " .. tostring(_a42.egg.eggUnlocked(_a491)))
-_a6("  거리      : " .. (_a489 and ("%.0f (사거리 안)"):format(_a489)
-or ((_a490 and ("%.0f (사거리 %d 밖)"):format(_a490, _a10.EggRange)) or "받침대 못 찾음")))
-local _a492 = _a488 and rawget(_a488, "currency") or "?"
-_a6("  통화      : " .. tostring(_a492) .. "   보유 " .. _a7(_a44(_a492), 0))
+local _a467, _a468, _a469, _a470 = _a48()
+_a6("  대상 알   : " .. tostring(_a467))
+if not _a467 then _a6("  (오픈한 알이 없음)") _a97("log") return end
+local _a471 = _a468 and tonumber(rawget(_a468, "eggNumber"))
+_a6("  알 번호   : " .. tostring(_a471) .. "   오픈함? " .. tostring(_a42.egg.eggUnlocked(_a471)))
+_a6("  거리      : " .. (_a469 and ("%.0f (사거리 안)"):format(_a469)
+or ((_a470 and ("%.0f (사거리 %d 밖)"):format(_a470, _a10.EggRange)) or "받침대 못 찾음")))
+local _a472 = _a468 and rawget(_a468, "currency") or "?"
+_a6("  통화      : " .. tostring(_a472) .. "   보유 " .. _a7(_a44(_a472), 0))
 if type(_a41.CalcEgg) == "function" then
-local _a493, _a494 = pcall(_a41.CalcEgg, _a488)
-_a6("  CalcEggPricePlayer : " .. (_a493 and tostring(_a494) or ("에러 " .. tostring(_a494))))
+local _a473, _a474 = pcall(_a41.CalcEgg, _a468)
+_a6("  CalcEggPricePlayer : " .. (_a473 and tostring(_a474) or ("에러 " .. tostring(_a474))))
 end
 if type(_a41.CalcEggB) == "function" then
-local _a495, _a496 = pcall(_a41.CalcEggB, _a488)
-_a6("  CalcEggPrice       : " .. (_a495 and tostring(_a496) or ("에러 " .. tostring(_a496))))
+local _a475, _a476 = pcall(_a41.CalcEggB, _a468)
+_a6("  CalcEggPrice       : " .. (_a475 and tostring(_a476) or ("에러 " .. tostring(_a476))))
 end
 if _a41.Egg then
-for _a497, _a498 in ipairs({ "GetMaxHatch", "ComputeDebounce", "GetHighestEggNumberAvailable" }) do
-if rawget(_a41.Egg, _a498) then
-local _a499, _a500 = pcall(_a41.Egg[_a498], _a488)
-_a6(("  %-28s : %s"):format(_a498, _a499 and tostring(_a500) or ("에러 " .. tostring(_a500))))
+for _a477, _a478 in ipairs({ "GetMaxHatch", "ComputeDebounce", "GetHighestEggNumberAvailable" }) do
+if rawget(_a41.Egg, _a478) then
+local _a479, _a480 = pcall(_a41.Egg[_a478], _a468)
+_a6(("  %-28s : %s"):format(_a478, _a479 and tostring(_a480) or ("에러 " .. tostring(_a480))))
 end
 end
 end
 _a6("  OpeningEgg      : " .. tostring(_a41.Vars and rawget(_a41.Vars, "OpeningEgg")))
 if _a41.Hatch then
-for _a501, _a502 in ipairs({ "IsHatching", "GetEggAmount" }) do
-if rawget(_a41.Hatch, _a502) then
-local _a503, _a504 = pcall(_a41.Hatch[_a502])
-_a6(("  %-15s : %s"):format(_a502, _a503 and tostring(_a504) or ("에러 " .. tostring(_a504))))
+for _a481, _a482 in ipairs({ "IsHatching", "GetEggAmount" }) do
+if rawget(_a41.Hatch, _a482) then
+local _a483, _a484 = pcall(_a41.Hatch[_a482])
+_a6(("  %-15s : %s"):format(_a482, _a483 and tostring(_a484) or ("에러 " .. tostring(_a484))))
 end
 end
 if rawget(_a41.Hatch, "GetEggDirectory") then
-local _a505, _a506 = pcall(_a41.Hatch.GetEggDirectory)
-_a6("  세팅된 알       : " .. (_a505 and _a506 and tostring(rawget(_a506, "_id")) or "없음"))
+local _a485, _a486 = pcall(_a41.Hatch.GetEggDirectory)
+_a6("  세팅된 알       : " .. (_a485 and _a486 and tostring(rawget(_a486, "_id")) or "없음"))
 end
 end
 _a6("  ▶ SetupEgg 시도")
 _a42.egg._ahEgg = nil
-_a42.egg.autoHatchOn(_a487, 1)
+_a42.egg.autoHatchOn(_a467, 1)
 if _a41.Hatch and rawget(_a41.Hatch, "IsHatching") then
-local _a507, _a508 = pcall(_a41.Hatch.IsHatching)
-_a6("    IsHatching 이후 : " .. (_a507 and tostring(_a508) or ("에러 " .. tostring(_a508))))
-_a6("    " .. ((_a507 and _a508) and "→ 클릭 없이 넘어갑니다"
+local _a487, _a488 = pcall(_a41.Hatch.IsHatching)
+_a6("    IsHatching 이후 : " .. (_a487 and tostring(_a488) or ("에러 " .. tostring(_a488))))
+_a6("    " .. ((_a487 and _a488) and "→ 클릭 없이 넘어갑니다"
 or "→ SetupEgg 안 먹음. 클릭 대체가 필요합니다"))
 end
 _a6("  신호 가능 : getgc " .. tostring(type(getgc) == "function")
 .. " / debug.setupvalue " .. tostring(type(debug) == "table" and type(debug.setupvalue) == "function"))
 _a6("")
 _a6("  ▶ 1개로 실제 호출")
-local _a509, _a510
-local _a511 = pcall(function() _a509, _a510 = _a9.R_EGG:InvokeServer(_a487, 1) end)
-_a6("    호출성공 : " .. tostring(_a511))
-_a6("    반환1    : " .. tostring(_a509))
-_a6("    반환2    : " .. tostring(_a510))
+local _a489, _a490
+local _a491 = pcall(function() _a489, _a490 = _a9.R_EGG:InvokeServer(_a467, 1) end)
+_a6("    호출성공 : " .. tostring(_a491))
+_a6("    반환1    : " .. tostring(_a489))
+_a6("    반환2    : " .. tostring(_a490))
 _a97("log")
 end)
 end },
 { label = "지금 전부 해금", col = _a55.good, fn = function()
 task.spawn(function()
 _a6("")
-local _a512, _a513 = _a42.egg.unlockEggs(true)
-_a6(_a512 > 0 and ("[해금] %d개 완료"):format(_a512)
-or ("[해금] 0개" .. (_a513 and (" — " .. tostring(_a513)) or "")))
+local _a492, _a493 = _a42.egg.unlockEggs(true)
+_a6(_a492 > 0 and ("[해금] %d개 완료"):format(_a492)
+or ("[해금] 0개" .. (_a493 and (" — " .. tostring(_a493)) or "")))
 _a97("log")
 end)
 end },
 })
-_a160(_a468, {
+_a160(_a448, {
 { label = "알 현황 보기", col = _a55.accent, fn = function()
-local _a514 = _a49()
+local _a494 = _a49()
 _a6("")
-if not _a514 then _a6("[부화] 알을 못 찾음")
+if not _a494 then _a6("[부화] 알을 못 찾음")
 else
 _a6("──── 메인 알 ────")
-_a6("  " .. tostring(_a514.id))
-_a6("  가격 " .. (_a514.price and _a7(_a514.price, 0) or "?") .. " " .. tostring(_a514.currency))
-_a6("  보유 " .. _a7(_a514.have, 0))
-_a6("  한 번에 " .. _a514.maxN .. "개까지")
-_a6("  지금 가능 " .. _a514.canBuy .. "회")
-if _a514.inRange then
-_a6(("  거리 %.0f 스터드 — 부화 가능"):format(_a514.dist))
+_a6("  " .. tostring(_a494.id))
+_a6("  가격 " .. (_a494.price and _a7(_a494.price, 0) or "?") .. " " .. tostring(_a494.currency))
+_a6("  보유 " .. _a7(_a494.have, 0))
+_a6("  한 번에 " .. _a494.maxN .. "개까지")
+_a6("  지금 가능 " .. _a494.canBuy .. "회")
+if _a494.inRange then
+_a6(("  거리 %.0f 스터드 — 부화 가능"):format(_a494.dist))
 else
 _a6(("  사거리(%d) 안에 알 없음. 가장 가까운 알 %s스터드"):format(
-_a10.EggRange, _a514.nearest and ("%.0f"):format(_a514.nearest) or "?"))
+_a10.EggRange, _a494.nearest and ("%.0f"):format(_a494.nearest) or "?"))
 _a6("  → 알 앞으로 걸어가야 부화됩니다")
 end
 end
 _a6("")
 _a6("──── 주변 알 (가까운 순 10개) ────")
-local _a515 = _a42.egg.eggStands()
-for _a516 = 1, math.min(10, #_a515) do
-local _a517 = _a515[_a516]
+local _a495 = _a42.egg.eggStands()
+for _a496 = 1, math.min(10, #_a495) do
+local _a497 = _a495[_a496]
 _a6(("  %6.0f  #%-3d %-24s %s"):format(
-_a517.dist, _a517.num, _a517.id, _a42.egg.eggUnlocked(_a517.num) and "오픈함" or "잠김"))
+_a497.dist, _a497.num, _a497.id, _a42.egg.eggUnlocked(_a497.num) and "오픈함" or "잠김"))
 end
-if #_a515 == 0 then _a6("  (못 찾음)") end
+if #_a495 == 0 then _a6("  (못 찾음)") end
 _a97("log")
 end },
 { label = "지금 1회", col = _a55.cardHi, fn = function()
 task.spawn(function() _a12.mhatch = true _a50() _a12.mhatch = false _a97("log") end)
 end },
 })
-local _a518, _a519 = _a130(_a346, "랭크 퀘스트 자동", nil)
-_a140(_a519, "quest", function()
+local _a498, _a499 = _a130(_a326, "랭크 퀘스트 자동", nil)
+_a140(_a499, "quest", function()
 _a54("quest", function() return _a10.QuestInterval end, _a42.quest.cycle, "퀘스트")
 end)
-_a151(_a518, {
-{ label = "주기", value = _a10.QuestInterval, onChange = function(_a520)
-local _a521 = tonumber(_a520) if _a521 and _a521 >= 5 then _a10.QuestInterval = _a521 end
+_a151(_a498, {
+{ label = "주기", value = _a10.QuestInterval, onChange = function(_a500)
+local _a501 = tonumber(_a500) if _a501 and _a501 >= 5 then _a10.QuestInterval = _a501 end
 end },
-{ label = "포션 한 번에", value = _a10.QuestUseMax, onChange = function(_a522)
-local _a523 = tonumber(_a522) if _a523 and _a523 >= 1 then _a10.QuestUseMax = math.floor(_a523) end
+{ label = "포션 한 번에", value = _a10.QuestUseMax, onChange = function(_a502)
+local _a503 = tonumber(_a502) if _a503 and _a503 >= 1 then _a10.QuestUseMax = math.floor(_a503) end
 end },
 })
-_a170(_a518, "필요한 자동화 자동 ON",
+_a170(_a498, "필요한 자동화 자동 ON",
 function() return _a10.QuestDrive end,
-function(_a524) _a10.QuestDrive = _a524 end)
-_a170(_a518, "포션/인챈트 업글 퀘스트",
+function(_a504) _a10.QuestDrive = _a504 end)
+_a170(_a498, "포션/인챈트 업글 퀘스트",
 function() return _a10.QuestUpgrade end,
-function(_a525) _a10.QuestUpgrade = _a525 end)
-_a170(_a518, "포션 사용 퀘스트",
+function(_a505) _a10.QuestUpgrade = _a505 end)
+_a170(_a498, "포션 사용 퀘스트",
 function() return _a10.QuestUsePotion end,
-function(_a526) _a10.QuestUsePotion = _a526 end)
-_a160(_a518, {
+function(_a506) _a10.QuestUsePotion = _a506 end)
+_a160(_a498, {
 { label = "퀘스트 현황 보기", col = _a55.accent, fn = function()
-local _a527 = _a42.quest.status()
+local _a507 = _a42.quest.status()
 _a6("")
-if not _a527 then _a6("[퀘스트] 세이브 못 읽음")
+if not _a507 then _a6("[퀘스트] 세이브 못 읽음")
 else
 _a6("──── 랭크 퀘스트 ────")
-_a6(("  Rank %d   ★%d"):format(_a527.rank, _a527.rankStars))
-if #_a527.list == 0 then _a6("  퀘스트 없음") end
-for _a528, _a529 in ipairs(_a527.list) do
-local _a530 = _a529.how
-local _a531 =
-(_a530 == "farm" and "자동 파밍") or
-(_a530 == "hatch" and "자동 부화") or
-(_a530 == "zone" and "자동 존") or
-(_a530 == "potup" and "포션 업글") or
-(_a530 == "encup" and "인챈트 업글") or
-(_a530 == "potuse" and "포션 사용") or
-(_a530 == "fruituse" and "과일 사용") or
-(_a530 == "flaguse" and "깃발 사용") or
-(_a530 == "gold" and "골드 머신") or
-(_a530 == "rainbow" and "레인보우 머신") or
+_a6(("  Rank %d   ★%d"):format(_a507.rank, _a507.rankStars))
+if #_a507.list == 0 then _a6("  퀘스트 없음") end
+for _a508, _a509 in ipairs(_a507.list) do
+local _a510 = _a509.how
+local _a511 =
+(_a510 == "farm" and "자동 파밍") or
+(_a510 == "hatch" and "자동 부화") or
+(_a510 == "zone" and "자동 존") or
+(_a510 == "potup" and "포션 업글") or
+(_a510 == "encup" and "인챈트 업글") or
+(_a510 == "potuse" and "포션 사용") or
+(_a510 == "fruituse" and "과일 사용") or
+(_a510 == "flaguse" and "깃발 사용") or
+(_a510 == "gold" and "골드 머신") or
+(_a510 == "rainbow" and "레인보우 머신") or
 "수동"
-local _a532 = ""
-if _a529.ignored then
-_a531 = "무시"
-_a532 = "   → " .. _a529.ignored
-elseif _a529.event then
-local _a533 = _a42.ev.findEvent(_a529.event, _a529.bestOnly)
-_a532 = _a533 and ("   → %s @%s %d초"):format(_a533.name, tostring(_a533.zone), _a533.left)
-or ("   → " .. _a529.event .. " 대기중")
-elseif _a529.chest then
-_a532 = "   → " .. _a529.chest
-elseif _a529.where then
-_a532 = "   → " .. _a529.where
+local _a512 = ""
+if _a509.ignored then
+_a511 = "무시"
+_a512 = "   → " .. _a509.ignored
+elseif _a509.event then
+local _a513 = _a42.ev.findEvent(_a509.event, _a509.bestOnly)
+_a512 = _a513 and ("   → %s @%s %d초"):format(_a513.name, tostring(_a513.zone), _a513.left)
+or ("   → " .. _a509.event .. " 대기중")
+elseif _a509.chest then
+_a512 = "   → " .. _a509.chest
+elseif _a509.where then
+_a512 = "   → " .. _a509.where
 end
-_a6(("  [%d] %s"):format(_a529.stars, tostring(_a529.title)))
+_a6(("  [%d] %s"):format(_a509.stars, tostring(_a509.title)))
 _a6(("       %d / %d    처리: %s   (Type %d)%s"):format(
-_a529.progress, _a529.amount, _a531, _a529.type, _a532))
+_a509.progress, _a509.amount, _a511, _a509.type, _a512))
 end
 end
 _a97("log")
 end },
 { label = "활성 이벤트 보기", col = _a55.accent, fn = function()
-local _a534 = _a42.ev.events()
-local _a535 = _a42.move.bestZone()
+local _a514 = _a42.ev.events()
+local _a515 = _a42.move.bestZone()
 _a6("")
 _a6("──── 지금 떠 있는 랜덤 이벤트 ────")
-_a6("  최고 존 : " .. tostring(_a535) .. "   현재 존 : " .. tostring(_a42.move.curZone()))
-if #_a534 == 0 then _a6("  없음 (RandomEvents_Get 응답 비어있음)") end
-for _a536, _a537 in ipairs(_a534) do
+_a6("  최고 존 : " .. tostring(_a515) .. "   현재 존 : " .. tostring(_a42.move.curZone()))
+if #_a514 == 0 then _a6("  없음 (RandomEvents_Get 응답 비어있음)") end
+for _a516, _a517 in ipairs(_a514) do
 _a6(("  %-12s @%-20s %4d초 남음  %s%s"):format(
-_a537.kind, tostring(_a537.zone), _a537.left,
-_a537.pos and ("(%.0f, %.0f, %.0f)"):format(_a537.pos.X, _a537.pos.Y, _a537.pos.Z) or "좌표없음",
-_a537.zone == _a535 and "  ★최고존" or ""))
+_a517.kind, tostring(_a517.zone), _a517.left,
+_a517.pos and ("(%.0f, %.0f, %.0f)"):format(_a517.pos.X, _a517.pos.Y, _a517.pos.Z) or "좌표없음",
+_a517.zone == _a515 and "  ★최고존" or ""))
 end
 _a6("")
 _a6("  내 소환 아이템 :")
-for _a538 in pairs(_a42.ev.SPAWN) do
-local _a539 = _a42.ev.spawnItems(_a538)
-local _a540 = 0
-for _a541, _a542 in ipairs(_a539) do _a540 += _a542.am end
-_a6(("    %-12s %d종 %d개"):format(_a538, #_a539, _a540))
-for _a543, _a544 in ipairs(_a539) do
+for _a518 in pairs(_a42.ev.SPAWN) do
+local _a519 = _a42.ev.spawnItems(_a518)
+local _a520 = 0
+for _a521, _a522 in ipairs(_a519) do _a520 += _a522.am end
+_a6(("    %-12s %d종 %d개"):format(_a518, #_a519, _a520))
+for _a523, _a524 in ipairs(_a519) do
 _a6(("        %d. %-24s x%d%s"):format(
-_a543, _a544.id, _a544.am, _a543 == 1 and "   ← 먼저 씀" or ""))
-if _a543 >= 6 then break end
+_a523, _a524.id, _a524.am, _a523 == 1 and "   ← 먼저 씀" or ""))
+if _a523 >= 6 then break end
 end
 end
 _a6("  점선 네모 안? " .. tostring(_a42.move.inDottedBox()))
-for _a545, _a546 in ipairs({ "MiniChests", "SuperiorMiniChests" }) do
-local _a547, _a548 = _a42.ev.findChest(_a546)
-_a6(("  %-20s %s"):format(_a546,
-_a547 and ("가장 가까운 것 %.0f스터드"):format(_a548 or 0) or "없음"))
+for _a525, _a526 in ipairs({ "MiniChests", "SuperiorMiniChests" }) do
+local _a527, _a528 = _a42.ev.findChest(_a526)
+_a6(("  %-20s %s"):format(_a526,
+_a527 and ("가장 가까운 것 %.0f스터드"):format(_a528 or 0) or "없음"))
 end
 _a97("log")
 end },
 { label = "포션 재고 보기", col = _a55.accent, fn = function()
 _a6("")
 _a6("──── 포션 / 인챈트 재고 ────")
-for _a549, _a550 in ipairs({ "Potion", "Enchant" }) do
-local _a551 = _a42.item.stacks(_a550)
-table.sort(_a551, function(_a552, _a553)
-if _a552.id ~= _a553.id then return _a552.id < _a553.id end
-return _a552.tier < _a553.tier
+for _a529, _a530 in ipairs({ "Potion", "Enchant" }) do
+local _a531 = _a42.item.stacks(_a530)
+table.sort(_a531, function(_a532, _a533)
+if _a532.id ~= _a533.id then return _a532.id < _a533.id end
+return _a532.tier < _a533.tier
 end)
 _a6("")
-_a6(_a550 .. "  (" .. #_a551 .. "종)")
-for _a554, _a555 in ipairs(_a551) do
-local _a556 = _a42.item.perTier(_a550, _a555.tier)
-local _a557 = _a556 and math.floor(_a555.am / _a556) or 0
+_a6(_a530 .. "  (" .. #_a531 .. "종)")
+for _a534, _a535 in ipairs(_a531) do
+local _a536 = _a42.item.perTier(_a530, _a535.tier)
+local _a537 = _a536 and math.floor(_a535.am / _a536) or 0
 _a6(("   %-20s T%-2d x%-6d %s"):format(
-_a555.id, _a555.tier, _a555.am,
-_a557 > 0 and ("→ T" .. (_a555.tier + 1) .. " " .. _a557 .. "개 제작가능") or ""))
-if _a554 >= 40 then _a6("   ...") break end
+_a535.id, _a535.tier, _a535.am,
+_a537 > 0 and ("→ T" .. (_a535.tier + 1) .. " " .. _a537 .. "개 제작가능") or ""))
+if _a534 >= 40 then _a6("   ...") break end
 end
-if #_a551 == 0 then _a6("   (없음)") end
+if #_a531 == 0 then _a6("   (없음)") end
 end
 _a97("log")
 end },
@@ -1549,46 +1492,46 @@ end },
 task.spawn(function() _a12.quest = true _a42.quest.cycle() _a12.quest = false _a97("log") end)
 end },
 })
-local _a558, _a559 = _a130(_a346, "슬롯 머신 자동 (다이아)", nil)
-_a140(_a559, "slots", function()
+local _a538, _a539 = _a130(_a326, "슬롯 머신 자동 (다이아)", nil)
+_a140(_a539, "slots", function()
 _a54("slots", function() return _a10.SlotInterval end, _a42.mach.cycleSlots, "슬롯")
 end)
-_a151(_a558, {
-{ label = "주기", value = _a10.SlotInterval, onChange = function(_a560)
-local _a561 = tonumber(_a560) if _a561 and _a561 >= 5 then _a10.SlotInterval = _a561 end
+_a151(_a538, {
+{ label = "주기", value = _a10.SlotInterval, onChange = function(_a540)
+local _a541 = tonumber(_a540) if _a541 and _a541 >= 5 then _a10.SlotInterval = _a541 end
 end },
-{ label = "남길 다이아", value = _a10.SlotReserve, onChange = function(_a562)
-local _a563 = tonumber(_a562) if _a563 and _a563 >= 0 then _a10.SlotReserve = _a563 end
+{ label = "남길 다이아", value = _a10.SlotReserve, onChange = function(_a542)
+local _a543 = tonumber(_a542) if _a543 and _a543 >= 0 then _a10.SlotReserve = _a543 end
 end },
 })
-_a170(_a558, "펫 장착 슬롯 (Pet Equip)",
-function() return _a10.SlotPet end, function(_a564) _a10.SlotPet = _a564 end)
-_a170(_a558, "알 부화 슬롯 (Egg Machine)",
-function() return _a10.SlotEgg end, function(_a565) _a10.SlotEgg = _a565 end)
-_a160(_a558, {
+_a170(_a538, "펫 장착 슬롯 (Pet Equip)",
+function() return _a10.SlotPet end, function(_a544) _a10.SlotPet = _a544 end)
+_a170(_a538, "알 부화 슬롯 (Egg Machine)",
+function() return _a10.SlotEgg end, function(_a545) _a10.SlotEgg = _a545 end)
+_a160(_a538, {
 { label = "슬롯 현황 보기", col = _a55.accent, fn = function()
-local _a566 = _a42.mach.slotStatus()
+local _a546 = _a42.mach.slotStatus()
 _a6("")
 _a6("──── 슬롯 머신 ────")
-if not _a566 then _a6("  세이브 못 읽음") _a97("log") return end
-_a6("  다이아 " .. _a7(_a566.dia, 0))
+if not _a546 then _a6("  세이브 못 읽음") _a97("log") return end
+_a6("  다이아 " .. _a7(_a546.dia, 0))
 _a6("")
 _a6(("  펫 장착 : 구매 %d / 랭크상한 %d   현재 최대장착 %s"):format(
-_a566.petOwned, _a566.petMax, tostring(_a566.maxEquip)))
-if _a566.petNext then
+_a546.petOwned, _a546.petMax, tostring(_a546.maxEquip)))
+if _a546.petNext then
 _a6(("     다음 #%d  %s 다이아  %s"):format(
-_a566.petNext, _a566.petCost and _a7(_a566.petCost, 0) or "?",
-(_a566.petCost and _a566.petCost <= _a566.dia - _a10.SlotReserve) and "← 지금 가능" or "부족"))
+_a546.petNext, _a546.petCost and _a7(_a546.petCost, 0) or "?",
+(_a546.petCost and _a546.petCost <= _a546.dia - _a10.SlotReserve) and "← 지금 가능" or "부족"))
 else
 _a6("     랭크 상한까지 다 삼 (랭크를 올려야 더 살 수 있음)")
 end
 _a6("")
 _a6(("  알 부화 : 구매 %d / 랭크상한 %d   한 번에 %s개"):format(
-_a566.eggOwned, _a566.eggMax, tostring(_a566.maxHatch)))
-if _a566.eggEnd then
+_a546.eggOwned, _a546.eggMax, tostring(_a546.maxHatch)))
+if _a546.eggEnd then
 _a6(("     다음 %d칸 묶음 → %d   %s 다이아  %s"):format(
-_a566.eggSize, _a566.eggEnd, _a566.eggCost and _a7(_a566.eggCost, 0) or "?",
-(_a566.eggCost and _a566.eggCost <= _a566.dia - _a10.SlotReserve) and "← 지금 가능" or "부족"))
+_a546.eggSize, _a546.eggEnd, _a546.eggCost and _a7(_a546.eggCost, 0) or "?",
+(_a546.eggCost and _a546.eggCost <= _a546.dia - _a10.SlotReserve) and "← 지금 가능" or "부족"))
 else
 _a6("     랭크 상한까지 다 삼")
 end
@@ -1601,89 +1544,89 @@ end },
 task.spawn(function() _a12.slots = true _a42.mach.cycleSlots() _a12.slots = false _a97("log") end)
 end },
 })
-local _a567, _a568 = _a130(_a346, "아이템 자동 사용 (버프 유지)", nil)
-_a140(_a568, "items", function()
+local _a547, _a548 = _a130(_a326, "아이템 자동 사용 (버프 유지)", nil)
+_a140(_a548, "items", function()
 _a54("items", function() return _a10.ItemInterval end, _a42.item.cycleItems, "아이템")
 end)
-_a151(_a567, {
-{ label = "주기", value = _a10.ItemInterval, onChange = function(_a569)
-local _a570 = tonumber(_a569) if _a570 and _a570 >= 5 then _a10.ItemInterval = _a570 end
+_a151(_a547, {
+{ label = "주기", value = _a10.ItemInterval, onChange = function(_a549)
+local _a550 = tonumber(_a549) if _a550 and _a550 >= 5 then _a10.ItemInterval = _a550 end
 end },
-{ label = "포션 한 바퀴 최대", value = _a10.BuffMaxPotion, onChange = function(_a571)
-local _a572 = tonumber(_a571) if _a572 and _a572 >= 1 then _a10.BuffMaxPotion = math.floor(_a572) end
-end },
-})
-_a151(_a567, {
-{ label = "남길 개수", value = _a10.ItemKeep, onChange = function(_a573)
-local _a574 = tonumber(_a573) if _a574 and _a574 >= 0 then _a10.ItemKeep = math.floor(_a574) end
-end },
-{ label = "과일/소모품 최대", value = _a10.BuffMaxOther, onChange = function(_a575)
-local _a576 = tonumber(_a575) if _a576 and _a576 >= 1 then _a10.BuffMaxOther = math.floor(_a576) end
+{ label = "포션 한 바퀴 최대", value = _a10.BuffMaxPotion, onChange = function(_a551)
+local _a552 = tonumber(_a551) if _a552 and _a552 >= 1 then _a10.BuffMaxPotion = math.floor(_a552) end
 end },
 })
-_a151(_a567, {
-{ label = "쓸 것 (비우면 전부)", value = _a10.ItemAllow, onChange = function(_a577)
-_a10.ItemAllow = _a577 or ""
+_a151(_a547, {
+{ label = "남길 개수", value = _a10.ItemKeep, onChange = function(_a553)
+local _a554 = tonumber(_a553) if _a554 and _a554 >= 0 then _a10.ItemKeep = math.floor(_a554) end
 end },
-{ label = "제외", value = _a10.ItemBlock, onChange = function(_a578)
-_a10.ItemBlock = _a578 or ""
+{ label = "과일/소모품 최대", value = _a10.BuffMaxOther, onChange = function(_a555)
+local _a556 = tonumber(_a555) if _a556 and _a556 >= 1 then _a10.BuffMaxOther = math.floor(_a556) end
 end },
 })
-_a170(_a567, "포션", function() return _a10.BuffPotion end,
-function(_a579) _a10.BuffPotion = _a579 end)
-_a170(_a567, "과일", function() return _a10.BuffFruit end,
-function(_a580) _a10.BuffFruit = _a580 end)
-_a170(_a567, "얼티밋 (충전되면 발동, 무료)", function() return _a10.BuffUltimate end,
-function(_a581) _a10.BuffUltimate = _a581 end)
-_a170(_a567, "소모품 (Rain/Sunlight 주의)", function() return _a10.BuffConsumable end,
-function(_a582) _a10.BuffConsumable = _a582 end)
-_a170(_a567, "높은 티어부터 사용 (끄면 낮은 것부터)", function() return _a10.BuffHighTier end,
-function(_a583) _a10.BuffHighTier = _a583 end)
-_a170(_a567, "최고 존에서만 사용", function() return _a10.ItemBestZone end,
-function(_a584) _a10.ItemBestZone = _a584 end)
-_a170(_a567, "최고 존이 아니면 이동 후 사용", function() return _a10.ItemTp end,
-function(_a585) _a10.ItemTp = _a585 end)
-_a160(_a567, {
+_a151(_a547, {
+{ label = "쓸 것 (비우면 전부)", value = _a10.ItemAllow, onChange = function(_a557)
+_a10.ItemAllow = _a557 or ""
+end },
+{ label = "제외", value = _a10.ItemBlock, onChange = function(_a558)
+_a10.ItemBlock = _a558 or ""
+end },
+})
+_a170(_a547, "포션", function() return _a10.BuffPotion end,
+function(_a559) _a10.BuffPotion = _a559 end)
+_a170(_a547, "과일", function() return _a10.BuffFruit end,
+function(_a560) _a10.BuffFruit = _a560 end)
+_a170(_a547, "얼티밋 (충전되면 발동, 무료)", function() return _a10.BuffUltimate end,
+function(_a561) _a10.BuffUltimate = _a561 end)
+_a170(_a547, "소모품 (Rain/Sunlight 주의)", function() return _a10.BuffConsumable end,
+function(_a562) _a10.BuffConsumable = _a562 end)
+_a170(_a547, "높은 티어부터 사용 (끄면 낮은 것부터)", function() return _a10.BuffHighTier end,
+function(_a563) _a10.BuffHighTier = _a563 end)
+_a170(_a547, "최고 존에서만 사용", function() return _a10.ItemBestZone end,
+function(_a564) _a10.ItemBestZone = _a564 end)
+_a170(_a547, "최고 존이 아니면 이동 후 사용", function() return _a10.ItemTp end,
+function(_a565) _a10.ItemTp = _a565 end)
+_a160(_a547, {
 { label = "버프 현황 보기", col = _a55.accent, fn = function()
 _a6("")
 _a6("──── 버프 / 아이템 ────")
 _a6(("  현재 존 %s / 최고 존 %s%s"):format(
 tostring(_a42.move.curZone()), tostring(_a42.move.bestZone()),
 _a10.ItemBestZone and (_a42.move.curZone() == _a42.move.bestZone() and "   ← 사용 가능" or "   ← 이동 필요") or ""))
-for _a586, _a587 in pairs({ Potions = "Potion", Fruits = "Fruit" }) do
-local _a588 = _a42.item.activeBuffs(_a586)
-local _a589 = {}
-for _a590 in pairs(_a588) do _a589[#_a589 + 1] = _a590 end
-table.sort(_a589)
-_a6(("  지금 걸린 %s : %s"):format(_a586,
-#_a589 > 0 and table.concat(_a589, ", ") or "없음"))
+for _a566, _a567 in pairs({ Potions = "Potion", Fruits = "Fruit" }) do
+local _a568 = _a42.item.activeBuffs(_a566)
+local _a569 = {}
+for _a570 in pairs(_a568) do _a569[#_a569 + 1] = _a570 end
+table.sort(_a569)
+_a6(("  지금 걸린 %s : %s"):format(_a566,
+#_a569 > 0 and table.concat(_a569, ", ") or "없음"))
 end
-local _a591 = _a43()
-local _a592 = _a591 and rawget(_a591, "Ultimates")
-if type(_a592) == "table" then
-local _a593 = {}
-for _a594 in pairs(_a592) do
-local _a595 = "?"
+local _a571 = _a43()
+local _a572 = _a571 and rawget(_a571, "Ultimates")
+if type(_a572) == "table" then
+local _a573 = {}
+for _a574 in pairs(_a572) do
+local _a575 = "?"
 if _a41.Ult and rawget(_a41.Ult, "IsCharged") then
-local _a596, _a597 = pcall(_a41.Ult.IsCharged, _a594)
-_a595 = _a596 and (_a597 and "충전됨" or "충전중") or "?"
+local _a576, _a577 = pcall(_a41.Ult.IsCharged, _a574)
+_a575 = _a576 and (_a577 and "충전됨" or "충전중") or "?"
 end
-_a593[#_a593 + 1] = _a594 .. "(" .. _a595 .. ")"
+_a573[#_a573 + 1] = _a574 .. "(" .. _a575 .. ")"
 end
-_a6("  얼티밋 : " .. (#_a593 > 0 and table.concat(_a593, ", ") or "없음"))
+_a6("  얼티밋 : " .. (#_a573 > 0 and table.concat(_a573, ", ") or "없음"))
 end
 _a6("")
-for _a598, _a599 in ipairs({ "Potion", "Fruit", "Consumable" }) do
-local _a600 = _a42.item.stacks(_a599)
-local _a601, _a602 = 0, 0
-for _a603, _a604 in ipairs(_a600) do
-if _a42.item.itemAllowed(_a604.id) then _a601 += 1 else _a602 += 1 end
+for _a578, _a579 in ipairs({ "Potion", "Fruit", "Consumable" }) do
+local _a580 = _a42.item.stacks(_a579)
+local _a581, _a582 = 0, 0
+for _a583, _a584 in ipairs(_a580) do
+if _a42.item.itemAllowed(_a584.id) then _a581 += 1 else _a582 += 1 end
 end
-_a6(("  %-12s %d종 (쓸 수 있음 %d / 제외 %d)"):format(_a599, #_a600, _a601, _a602))
-for _a605, _a606 in ipairs(_a600) do
+_a6(("  %-12s %d종 (쓸 수 있음 %d / 제외 %d)"):format(_a579, #_a580, _a581, _a582))
+for _a585, _a586 in ipairs(_a580) do
 _a6(("      %-20s T%-2d x%-6d %s"):format(
-_a606.id, _a606.tier, _a606.am, _a42.item.itemAllowed(_a606.id) and "" or "제외됨"))
-if _a605 >= 12 then _a6("      ...") break end
+_a586.id, _a586.tier, _a586.am, _a42.item.itemAllowed(_a586.id) and "" or "제외됨"))
+if _a585 >= 12 then _a6("      ...") break end
 end
 end
 _a6("")
@@ -1697,49 +1640,49 @@ end },
 task.spawn(function() _a12.items = true _a42.item.cycleItems() _a12.items = false _a97("log") end)
 end },
 })
-local _a607, _a608 = _a130(_a346, "맵 업그레이드 자동 (다이아)", nil)
-_a140(_a608, "mapupg", function()
+local _a587, _a588 = _a130(_a326, "맵 업그레이드 자동 (다이아)", nil)
+_a140(_a588, "mapupg", function()
 _a54("mapupg", function() return _a10.UpgInterval end, _a42.mach.cycleUpg, "맵업글")
 end)
-_a151(_a607, {
-{ label = "주기", value = _a10.UpgInterval, onChange = function(_a609)
-local _a610 = tonumber(_a609) if _a610 and _a610 >= 5 then _a10.UpgInterval = _a610 end
+_a151(_a587, {
+{ label = "주기", value = _a10.UpgInterval, onChange = function(_a589)
+local _a590 = tonumber(_a589) if _a590 and _a590 >= 5 then _a10.UpgInterval = _a590 end
 end },
-{ label = "남길 다이아", value = _a10.UpgReserve, onChange = function(_a611)
-local _a612 = tonumber(_a611) if _a612 and _a612 >= 0 then _a10.UpgReserve = _a612 end
+{ label = "남길 다이아", value = _a10.UpgReserve, onChange = function(_a591)
+local _a592 = tonumber(_a591) if _a592 and _a592 >= 0 then _a10.UpgReserve = _a592 end
 end },
 })
-_a170(_a607, "구매 전 그 앞으로 이동",
+_a170(_a587, "구매 전 그 앞으로 이동",
 function() return _a10.UpgTp end,
-function(_a613) _a10.UpgTp = _a613 end)
-_a160(_a607, {
+function(_a593) _a10.UpgTp = _a593 end)
+_a160(_a587, {
 { label = "업그레이드 목록", col = _a55.accent, fn = function()
-local _a614 = _a42.mach.upgList()
-local _a615 = _a44("Diamonds")
+local _a594 = _a42.mach.upgList()
+local _a595 = _a44("Diamonds")
 _a6("")
 _a6("──── 맵 업그레이드 ────")
-_a6("보유 다이아 " .. _a7(_a615, 0))
-if #_a614 == 0 then
+_a6("보유 다이아 " .. _a7(_a595, 0))
+if #_a594 == 0 then
 _a6("  로드된 업그레이드 기둥이 없음 (해당 존에 가야 보입니다)")
 end
-local _a616, _a617, _a618 = 0, 0, 0
-for _a619, _a620 in ipairs(_a614) do
-if _a620.bought then _a617 += 1
-elseif not _a620.zoneOwned then _a618 += 1
-else _a616 += 1 end
+local _a596, _a597, _a598 = 0, 0, 0
+for _a599, _a600 in ipairs(_a594) do
+if _a600.bought then _a597 += 1
+elseif not _a600.zoneOwned then _a598 += 1
+else _a596 += 1 end
 end
-_a6(("  구매가능 %d / 구매완료 %d / 존 미보유 %d"):format(_a616, _a617, _a618))
+_a6(("  구매가능 %d / 구매완료 %d / 존 미보유 %d"):format(_a596, _a597, _a598))
 _a6("")
-local _a621 = 0
-for _a622, _a623 in ipairs(_a614) do
-if _a623.buyable then
-_a621 += 1
+local _a601 = 0
+for _a602, _a603 in ipairs(_a594) do
+if _a603.buyable then
+_a601 += 1
 _a6(("  %-12s T%-2d %-20s %12s %-9s %s"):format(
-_a623.id, _a623.tier, _a623.zone, _a623.cost and _a7(_a623.cost, 0) or "?",
-tostring(_a623.cur),
-(_a623.cost and _a623.cost <= _a44(_a623.cur or "Diamonds") - _a10.UpgReserve)
+_a603.id, _a603.tier, _a603.zone, _a603.cost and _a7(_a603.cost, 0) or "?",
+tostring(_a603.cur),
+(_a603.cost and _a603.cost <= _a44(_a603.cur or "Diamonds") - _a10.UpgReserve)
 and "← 지금 가능" or ""))
-if _a621 >= 25 then _a6("  ...") break end
+if _a601 >= 25 then _a6("  ...") break end
 end
 end
 _a97("log")
@@ -1749,51 +1692,51 @@ task.spawn(function()
 _a6("")
 _a6("──── 맵 업그레이드 진단 ────")
 _a6("  리모트 : " .. (_a41.R_Upg and _a41.R_Upg:GetFullName() or "없음"))
-local _a624 = _a42.mach.upgList()
-_a6("  로드된 기둥 " .. #_a624 .. "개")
-local _a625
-for _a626, _a627 in ipairs(_a624) do
-if _a627.buyable and _a627.cost then _a625 = _a627 break end
+local _a604 = _a42.mach.upgList()
+_a6("  로드된 기둥 " .. #_a604 .. "개")
+local _a605
+for _a606, _a607 in ipairs(_a604) do
+if _a607.buyable and _a607.cost then _a605 = _a607 break end
 end
-if not _a625 then
+if not _a605 then
 _a6("  살 수 있는 게 없음 (전부 구매완료거나 존 미보유)")
-for _a628, _a629 in ipairs(_a624) do
+for _a608, _a609 in ipairs(_a604) do
 _a6(("   %-12s T%-2d @%-18s 구매됨=%s 존보유=%s"):format(
-_a629.id, _a629.tier, tostring(_a629.zone), tostring(_a629.bought), tostring(_a629.zoneOwned)))
-if _a628 >= 8 then _a6("   ...") break end
+_a609.id, _a609.tier, tostring(_a609.zone), tostring(_a609.bought), tostring(_a609.zoneOwned)))
+if _a608 >= 8 then _a6("   ...") break end
 end
 _a97("log") return
 end
-local _a630 = _a44(_a625.cur or "Diamonds")
-local _a631 = _a42.move.hrp()
-local _a632 = (_a631 and _a625.pos) and (_a631.Position - _a625.pos).Magnitude or nil
-_a6(("  대상 : %s T%d @%s"):format(_a625.id, _a625.tier, tostring(_a625.zone)))
+local _a610 = _a44(_a605.cur or "Diamonds")
+local _a611 = _a42.move.hrp()
+local _a612 = (_a611 and _a605.pos) and (_a611.Position - _a605.pos).Magnitude or nil
+_a6(("  대상 : %s T%d @%s"):format(_a605.id, _a605.tier, tostring(_a605.zone)))
 _a6(("  가격 : %s %s / 보유 %s"):format(
-_a7(_a625.cost, 0), tostring(_a625.cur), _a7(_a630, 0)))
-_a6("  거리 : " .. (_a632 and ("%.0f 스터드"):format(_a632) or "좌표 없음"))
+_a7(_a605.cost, 0), tostring(_a605.cur), _a7(_a610, 0)))
+_a6("  거리 : " .. (_a612 and ("%.0f 스터드"):format(_a612) or "좌표 없음"))
 _a6("")
 _a6("  ▶ 제자리에서 호출")
-local _a633, _a634
-local _a635 = pcall(function() _a633, _a634 = _a41.R_Upg:InvokeServer(_a625.id, _a625.zone) end)
-_a6("    호출성공 " .. tostring(_a635) .. " / 반환1 " .. tostring(_a633)
-.. " / 반환2 " .. tostring(_a634))
-if not _a633 and _a625.pos then
+local _a613, _a614
+local _a615 = pcall(function() _a613, _a614 = _a41.R_Upg:InvokeServer(_a605.id, _a605.zone) end)
+_a6("    호출성공 " .. tostring(_a615) .. " / 반환1 " .. tostring(_a613)
+.. " / 반환2 " .. tostring(_a614))
+if not _a613 and _a605.pos then
 _a6("")
 _a6("  ▶ 기둥 앞으로 이동해서 재시도")
-_a42.move.glideTo(_a625.pos)
+_a42.move.glideTo(_a605.pos)
 task.wait(0.3)
-local _a636 = _a42.move.hrp()
-_a6("    이동후 거리 " .. (_a636 and ("%.0f"):format((_a636.Position - _a625.pos).Magnitude) or "?"))
-local _a637, _a638
-local _a639 = pcall(function() _a637, _a638 = _a41.R_Upg:InvokeServer(_a625.id, _a625.zone) end)
-_a6("    호출성공 " .. tostring(_a639) .. " / 반환1 " .. tostring(_a637)
-.. " / 반환2 " .. tostring(_a638))
+local _a616 = _a42.move.hrp()
+_a6("    이동후 거리 " .. (_a616 and ("%.0f"):format((_a616.Position - _a605.pos).Magnitude) or "?"))
+local _a617, _a618
+local _a619 = pcall(function() _a617, _a618 = _a41.R_Upg:InvokeServer(_a605.id, _a605.zone) end)
+_a6("    호출성공 " .. tostring(_a619) .. " / 반환1 " .. tostring(_a617)
+.. " / 반환2 " .. tostring(_a618))
 _a6("")
-_a6(_a637 and "  → 거리 검사 있음. 이동해야 됩니다."
+_a6(_a617 and "  → 거리 검사 있음. 이동해야 됩니다."
 or "  → 이동해도 실패. 거리 문제가 아닙니다.")
 else
 _a6("")
-_a6(_a633 and "  → 원격으로 됩니다. 이동 불필요." or "  → 실패 (좌표 없음)")
+_a6(_a613 and "  → 원격으로 됩니다. 이동 불필요." or "  → 실패 (좌표 없음)")
 end
 _a97("log")
 end)
@@ -1802,30 +1745,30 @@ end },
 task.spawn(function() _a12.mapupg = true _a42.mach.cycleUpg() _a12.mapupg = false _a97("log") end)
 end },
 })
-local _a640, _a641 = _a130(_a346, "자동 리버스", nil)
-_a140(_a641, "mreb", function()
+local _a620, _a621 = _a130(_a326, "자동 리버스", nil)
+_a140(_a621, "mreb", function()
 _a54("mreb", function() return _a10.MainRebirthInterval end, _a52, "리버스")
 end)
-_a151(_a640, {
-{ label = "주기", value = _a10.MainRebirthInterval, onChange = function(_a642)
-local _a643 = tonumber(_a642) if _a643 and _a643 >= 10 then _a10.MainRebirthInterval = _a643 end
+_a151(_a620, {
+{ label = "주기", value = _a10.MainRebirthInterval, onChange = function(_a622)
+local _a623 = tonumber(_a622) if _a623 and _a623 >= 10 then _a10.MainRebirthInterval = _a623 end
 end },
 })
-_a170(_a640, "실패 이유 로그",
+_a170(_a620, "실패 이유 로그",
 function() return _a10.MainRebirthVerbose end,
-function(_a644) _a10.MainRebirthVerbose = _a644 end)
-_a160(_a640, {
+function(_a624) _a10.MainRebirthVerbose = _a624 end)
+_a160(_a620, {
 { label = "리버스 현황 보기", col = _a55.accent, fn = function()
-local _a645 = _a51()
+local _a625 = _a51()
 _a6("")
-if not _a645 then _a6("[리버스] 세이브 못 읽음")
+if not _a625 then _a6("[리버스] 세이브 못 읽음")
 else
 _a6("──── 메인 리버스 ────")
-_a6("  현재 " .. _a645.current .. "회 → 다음 " .. _a645.nextN)
-if type(_a645.def) == "table" then
-for _a646, _a647 in pairs(_a645.def) do
-if type(_a647) ~= "table" and type(_a647) ~= "function" then
-_a6("    " .. tostring(_a646) .. " = " .. tostring(_a647))
+_a6("  현재 " .. _a625.current .. "회 → 다음 " .. _a625.nextN)
+if type(_a625.def) == "table" then
+for _a626, _a627 in pairs(_a625.def) do
+if type(_a627) ~= "table" and type(_a627) ~= "function" then
+_a6("    " .. tostring(_a626) .. " = " .. tostring(_a627))
 end
 end
 end
@@ -1836,10 +1779,10 @@ end },
 task.spawn(function() _a12.mreb = true _a52() _a12.mreb = false _a97("log") end)
 end },
 })
-local _a648 = _a130(_a346, "전체 제어", nil)
-_a160(_a648, {
+local _a628 = _a130(_a326, "전체 제어", nil)
+_a160(_a628, {
 { label = "메인 전부 ON", col = _a55.good, fn = function()
-local _a649 = {
+local _a629 = {
 { "farm",   function() return _a10.FarmInterval end,       _a45,       "파밍" },
 { "zone",   function() return _a10.ZoneInterval end,       _a47,       "존" },
 { "mhatch", function() return _a10.MainHatchInterval end,  _a50,  "부화" },
@@ -1848,10 +1791,10 @@ local _a649 = {
 { "items",  function() return _a10.ItemInterval end,       _a42.item.cycleItems,   "아이템" },
 { "slots",  function() return _a10.SlotInterval end,       _a42.mach.cycleSlots,   "슬롯" },
 }
-for _a650, _a651 in ipairs(_a649) do
-if not _a12[_a651[1]] then
-_a12[_a651[1]] = true
-_a54(_a651[1], _a651[2], _a651[3], _a651[4])
+for _a630, _a631 in ipairs(_a629) do
+if not _a12[_a631[1]] then
+_a12[_a631[1]] = true
+_a54(_a631[1], _a631[2], _a631[3], _a631[4])
 end
 end
 _a137()
@@ -1865,10 +1808,10 @@ end },
 })
 end
 _a88.MouseButton1Click:Connect(function()
-local _a652 = table.concat(_a5, "\n")
-if #_a652 > 900000 then _a652 = _a652:sub(#_a652 - 900000) end
+local _a632 = table.concat(_a5, "\n")
+if #_a632 > 900000 then _a632 = _a632:sub(#_a632 - 900000) end
 if type(setclipboard) == "function" then
-pcall(setclipboard, _a652)
+pcall(setclipboard, _a632)
 _a88.Text = "완료"
 task.delay(1.5, function() if _a88 then _a88.Text = "복사" end end)
 end
@@ -1878,7 +1821,7 @@ table.clear(_a5)
 _a182.top = nil
 _a1.dirty = true
 end)
-local function _a653()
+local function _a633()
 _a12.place, _a12.merchant, _a12.upgrade = false, false, false
 _a12.towerup, _a12.crop, _a12.expand, _a12.rebirth, _a12.hatch, _a12.luck = false, false, false, false, false, false
 _a12.farm, _a12.zone, _a12.mhatch, _a12.rank, _a12.mreb = false, false, false, false, false
@@ -1886,9 +1829,9 @@ if _a202 then _a202:Disconnect() end
 if _a73 then _a73:Destroy() end
 _G.__PS99_GARDEN = nil
 end
-_a85.MouseButton1Click:Connect(_a653)
-_G.__PS99_GARDEN = _a653
-_a97("dash")
+_a85.MouseButton1Click:Connect(_a633)
+_G.__PS99_GARDEN = _a633
+_a97("main")
 _a6("PS99 자동")
 if _a1.lpWait then
 _a6(("[진단] LocalPlayer 가 늦게 잡혔습니다 — %.1f초 대기, 결과 %s")
@@ -1911,12 +1854,12 @@ _a6("[자동] 올 자동 켜짐 — 1초 뒤 시작합니다")
 task.spawn(function()
 task.wait(1)
 _a42.ctl.abort = false
-local _a654, _a655 = pcall(_a42.auto.start)
-if _a654 then
+local _a634, _a635 = pcall(_a42.auto.start)
+if _a634 then
 _a6("[자동] 시작됨")
 else
 _a12.auto = false
-_a6("[자동] 시작 실패: " .. tostring(_a655))
+_a6("[자동] 시작 실패: " .. tostring(_a635))
 if _a42.auto.refresh then pcall(_a42.auto.refresh) end
 end
 end)
@@ -1926,11 +1869,11 @@ _a6("[자동] QS.auto.start 가 없습니다 — 메인 게임 탭이 안 만들
 end
 end
 pcall(function()
-local _a656, _a657, _a658, _a659 = _a15()
-if _a656 and _a658 then
-local _a660 = _a16(_a658, _a659)
-_a13.slots = #_a660
-_a6("레인 " .. _a659 .. " / 슬롯 " .. #_a660)
+local _a636, _a637, _a638, _a639 = _a15()
+if _a636 and _a638 then
+local _a640 = _a16(_a638, _a639)
+_a13.slots = #_a640
+_a6("레인 " .. _a639 .. " / 슬롯 " .. #_a640)
 else
 _a6("가든 이벤트 밖입니다 (이벤트 탭은 이벤트 안에서만 동작)")
 end
